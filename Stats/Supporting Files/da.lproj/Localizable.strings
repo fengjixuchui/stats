@@ -57,6 +57,7 @@
 "Center alignment" = "Midterjusteret";
 "Right alignment" = "Højrejusteret";
 "Dashboard" = "Instrumentbræt";
+"Enabled" = "Enabled";
 "Disabled" = "Deaktiveret";
 "Silent" = "Silent";
 "Units" = "Units";
@@ -66,6 +67,7 @@
 "Square" = "Square";
 "Cube" = "Cube";
 "Logarithmic" = "Logarithmic";
+"Cores" = "Cores";
 
 // Setup
 "Stats Setup" = "Stats Setup";
@@ -122,6 +124,8 @@
 "Uptime" = "Uptime";
 "Number of cores" = "%0 cores";
 "Number of threads" = "%0 threads";
+"Number of e-cores" = "%0 efficiency cores";
+"Number of p-cores" = "%0 performance cores";
 
 // Update
 "The latest version of Stats installed" = "Den nyeste udgave af Stats er installeret";
@@ -196,6 +200,8 @@
 "15 minutes" = "15 minuter";
 "CPU usage threshold" = "CPU usage threshold";
 "CPU usage is" = "CPU usage is %0";
+"Efficiency cores" = "Efficiency cores";
+"Performance cores" = "Performance cores";
 
 // GPU
 "GPU to show" = "GPU der vises";
@@ -250,6 +256,8 @@
 "Fan" = "Blæser";
 "HID sensors" = "HID sensors";
 "Synchronize fan's control" = "Synchronize fan's control";
+"Current" = "Current";
+"Energy" = "Energy";
 
 // Network
 "Uploading" = "Upload";
@@ -275,6 +283,9 @@
 "Standard" = "Standard";
 "Security" = "Security";
 "Channel" = "Channel";
+"Common scale" = "Common scale";
+"Autodetection" = "Autodetection";
+"Widget activation threshold" = "Widget activation threshold";
 
 // Battery
 "Level" = "Niveau";
@@ -309,6 +320,8 @@
 "Last charge" = "Sidst opladt";
 "Capacity" = "Capacity";
 "maximum / designed" = "maximum / designed";
+"Low power mode" = "Low power mode";
+"Percentage inside the icon" = "Percentage inside the icon";
 
 // Bluetooth
 "Battery to show" = "Batteri der vises";

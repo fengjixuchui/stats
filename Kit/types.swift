@@ -81,6 +81,8 @@ public let SpeedPictogram: [KeyValue_t] = [
 public let BatteryAdditionals: [KeyValue_t] = [
     KeyValue_t(key: "none", value: "None"),
     KeyValue_t(key: "separator", value: "separator"),
+    KeyValue_t(key: "innerPercentage", value: "Percentage inside the icon"),
+    KeyValue_t(key: "separator", value: "separator"),
     KeyValue_t(key: "percentage", value: "Percentage"),
     KeyValue_t(key: "time", value: "Time"),
     KeyValue_t(key: "percentageAndTime", value: "Percentage and time"),
@@ -120,6 +122,7 @@ public struct Color: KeyValue_p, Equatable {
 extension Color: CaseIterable {
     public static var utilization: Color { return Color(key: "utilization", value: "Based on utilization", additional: NSColor.black) }
     public static var pressure: Color { return Color(key: "pressure", value: "Based on pressure", additional: NSColor.black) }
+    public static var cluster: Color { return Color(key: "cluster", value: "Based on cluster", additional: NSColor.black) }
     
     public static var separator1: Color { return Color(key: "separator_1", value: "separator_1", additional: NSColor.black) }
     
@@ -213,12 +216,6 @@ public var isARM: Bool {
         value = true
         #endif
         return value
-    }
-}
-
-public var isM1: Bool {
-    get {
-        return SystemKit.shared.device.info.cpu?.name == "Apple M1" ? true : false
     }
 }
 

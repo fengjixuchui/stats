@@ -173,7 +173,11 @@ public extension Double {
         }
     }
     
-    func batteryColor(color: Bool = false) -> NSColor {
+    func batteryColor(color: Bool = false, lowPowerMode: Bool? = nil) -> NSColor {
+        if let mode = lowPowerMode, mode {
+            return NSColor.systemOrange
+        }
+        
         switch self {
         case 0.2...0.4:
             if !color {
@@ -190,6 +194,22 @@ public extension Double {
             return NSColor.systemGreen
         default:
             return NSColor.systemRed
+        }
+    }
+    
+    func clusterColor(_ i: Int) -> NSColor? {
+        guard let cores = SystemKit.shared.device.info.cpu?.cores,
+              let core = cores.first(where: {$0.id == i }) else {
+            return nil
+        }
+        
+        switch core.type {
+        case .efficiency:
+            return .systemTeal
+        case .performance:
+            return .systemBlue
+        default:
+            return nil
         }
     }
     

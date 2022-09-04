@@ -57,6 +57,7 @@
 "Center alignment" = "Centrerad";
 "Right alignment" = "Höger";
 "Dashboard" = "Kontrollpanel";
+"Enabled" = "Enabled";
 "Disabled" = "Inaktiverad";
 "Silent" = "Tyst";
 "Units" = "Enheter";
@@ -66,6 +67,7 @@
 "Square" = "Square";
 "Cube" = "Cube";
 "Logarithmic" = "Logarithmic";
+"Cores" = "Cores";
 
 // Setup
 "Stats Setup" = "Stats Setup";
@@ -122,6 +124,8 @@
 "Uptime" = "Upptid";
 "Number of cores" = "%0 kärnor";
 "Number of threads" = "%0 trådar";
+"Number of e-cores" = "%0 efficiency cores";
+"Number of p-cores" = "%0 performance cores";
 
 // Update
 "The latest version of Stats installed" = "Du har den senaste versionen av Stats";
@@ -196,6 +200,8 @@
 "15 minutes" = "15 minuter";
 "CPU usage threshold" = "Tröskelvärde CPU-användning";
 "CPU usage is" = "CPU-anvädningen är %0";
+"Efficiency cores" = "Efficiency cores";
+"Performance cores" = "Performance cores";
 
 // GPU
 "GPU to show" = "GPU att visa";
@@ -250,6 +256,8 @@
 "Fan" = "Fläkt";
 "HID sensors" = "HID-sensorer";
 "Synchronize fan's control" = "Synkronisera fläktkontroll";
+"Current" = "Current";
+"Energy" = "Energy";
 
 // Network
 "Uploading" = "Skickar";
@@ -275,6 +283,9 @@
 "Standard" = "Standard";
 "Security" = "Säkerhet";
 "Channel" = "Kanal";
+"Common scale" = "Common scale";
+"Autodetection" = "Autodetection";
+"Widget activation threshold" = "Widget activation threshold";
 
 // Battery
 "Level" = "Nivå";
@@ -309,6 +320,8 @@
 "Last charge" = "Senaste laddning";
 "Capacity" = "Kapacitet";
 "maximum / designed" = "nuvarande / ursprunglig";
+"Low power mode" = "Low power mode";
+"Percentage inside the icon" = "Percentage inside the icon";
 
 // Bluetooth
 "Battery to show" = "Batteri att visa";

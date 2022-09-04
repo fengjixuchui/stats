@@ -303,6 +303,7 @@ public class NetworkChartView: NSView {
     
     private var minMax: Bool = false
     private var scale: Scale = .none
+    private var commonScale: Bool = true
     
     public init(frame: NSRect, num: Int, minMax: Bool = true) {
         self.minMax = minMax
@@ -330,8 +331,15 @@ public class NetworkChartView: NSView {
             downloadMax = 1
         }
         
+        if !self.commonScale {
+            if downloadMax > uploadMax {
+                uploadMax = downloadMax
+            } else {
+                downloadMax = uploadMax
+            }
+        }
+        
         let lineWidth = 1 / (NSScreen.main?.backingScaleFactor ?? 1)
-        let offset = lineWidth / 2
         let zero: CGFloat = (dirtyRect.height/2) + dirtyRect.origin.y
         let xRatio: CGFloat = (dirtyRect.width + (lineWidth*3)) / CGFloat(points.count)
         
@@ -339,10 +347,10 @@ public class NetworkChartView: NSView {
             return (CGFloat(point) * xRatio) + (dirtyRect.origin.x - lineWidth)
         }
         let uploadYPoint = { (point: Int) -> CGFloat in
-            return scaleValue(scale: self.scale, value: points[point].0, maxValue: uploadMax, maxHeight: dirtyRect.height/2) + (dirtyRect.origin.y + dirtyRect.height/2 - offset)
+            return scaleValue(scale: self.scale, value: points[point].0, maxValue: uploadMax, maxHeight: dirtyRect.height/2) + (dirtyRect.height/2 + dirtyRect.origin.y)
         }
         let downloadYPoint = { (point: Int) -> CGFloat in
-            return (dirtyRect.height/2 + dirtyRect.origin.y + offset) - scaleValue(scale: self.scale, value: points[point].1, maxValue: downloadMax, maxHeight: dirtyRect.height/2)
+            return (dirtyRect.height/2 + dirtyRect.origin.y) - scaleValue(scale: self.scale, value: points[point].1, maxValue: downloadMax, maxHeight: dirtyRect.height/2)
         }
         
         let uploadlinePath = NSBezierPath()
@@ -427,8 +435,10 @@ public class NetworkChartView: NSView {
         }
     }
     
-    public func setScale(_ newScale: Scale) {
+    public func setScale(_ newScale: Scale, _ commonScale: Bool) {
         self.scale = newScale
+        self.commonScale = commonScale
+        
         if self.window?.isVisible ?? false {
             self.display()
         }

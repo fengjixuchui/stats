@@ -57,6 +57,7 @@
 "Center alignment" = "По центру";
 "Right alignment" = "Праворуч";
 "Dashboard" = "Dashboard";
+"Enabled" = "Включено";
 "Disabled" = "Виключено";
 "Silent" = "Безшумно";
 "Units" = "Одиниці";
@@ -66,6 +67,7 @@
 "Square" = "Квадратне";
 "Cube" = "Кубічне";
 "Logarithmic" = "Логарифмічне";
+"Cores" = "Ядра";
 
 // Setup
 "Stats Setup" = "Stats Setup";
@@ -122,6 +124,8 @@
 "Uptime" = "Час роботи";
 "Number of cores" = "%0 ядер";
 "Number of threads" = "%0 потоків";
+"Number of e-cores" = "%0 енергоефективних ядер";
+"Number of p-cores" = "%0 високопродуктивних ядер";
 
 // Update
 "The latest version of Stats installed" = "Встановлено останню версію";
@@ -196,6 +200,8 @@
 "15 minutes" = "15 хвилин";
 "CPU usage threshold" = "Поріг використання процесора";
 "CPU usage is" = "Використання процесора %0";
+"Efficiency cores" = "Енергоефективні ядра";
+"Performance cores" = "Високопродуктивні ядра";
 
 // GPU
 "GPU to show" = "Активний графічний процесор";
@@ -250,6 +256,8 @@
 "Fan" = "Вентилятор";
 "HID sensors" = "HID датчики";
 "Synchronize fan's control" = "Синхронізація керування вентиляторами";
+"Current" = "Струм";
+"Energy" = "Енергія";
 
 // Network
 "Uploading" = "Висилання";
@@ -275,6 +283,9 @@
 "Standard" = "Стандарт";
 "Security" = "Шифрування";
 "Channel" = "Канал";
+"Common scale" = "Загальна шкала";
+"Autodetection" = "Автовизначення";
+"Widget activation threshold" = "Поріг активації віджета";
 
 // Battery
 "Level" = "Рівень заряду";
@@ -309,6 +320,8 @@
 "Last charge" = "Остання зарядка";
 "Capacity" = "Ємність";
 "maximum / designed" = "максимальна / запроектована";
+"Low power mode" = "Режим низької потужності";
+"Percentage inside the icon" = "Відсоток всередині віджету";
 
 // Bluetooth
 "Battery to show" = "Активна батарея";

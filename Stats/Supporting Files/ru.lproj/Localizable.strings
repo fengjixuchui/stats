@@ -57,6 +57,7 @@
 "Center alignment" = "по центру";
 "Right alignment" = "по правому";
 "Dashboard" = "Dashboard";
+"Enabled" = "Включено";
 "Disabled" = "Отключено";
 "Silent" = "Бесшумно";
 "Units" = "Units";
@@ -66,6 +67,7 @@
 "Square" = "Квадратное";
 "Cube" = "Кубическое";
 "Logarithmic" = "Логарифмическое";
+"Cores" = "Ядра";
 
 // Setup
 "Stats Setup" = "Stats Setup";
@@ -122,6 +124,8 @@
 "Uptime" = "Время работы";
 "Number of cores" = "%0 ядер";
 "Number of threads" = "%0 потоков";
+"Number of e-cores" = "%0 производительных ядер";
+"Number of p-cores" = "%0 энергоэффективных ядер";
 
 // Update
 "The latest version of Stats installed" = "Установлена последняя версия";
@@ -196,6 +200,8 @@
 "15 minutes" = "15 минут";
 "CPU usage threshold" = "Порог использования процессора";
 "CPU usage is" = "Использование процессора %0";
+"Efficiency cores" = "Энергоэффективные ядра";
+"Performance cores" = "Производительные ядра";
 
 // GPU
 "GPU to show" = "Активный графический процессор";
@@ -250,6 +256,8 @@
 "Fan" = "Вентилятор";
 "HID sensors" = "HID датчики";
 "Synchronize fan's control" = "Синхронизировать управление вентиляторами";
+"Current" = "Ток";
+"Energy" = "Энергия";
 
 // Network
 "Uploading" = "Выгрузка";
@@ -275,6 +283,9 @@
 "Standard" = "Стандарт";
 "Security" = "Шифрование";
 "Channel" = "Канал";
+"Common scale" = "Общий масштаб";
+"Autodetection" = "Автоопределение";
+"Widget activation threshold" = "Порог активации виджета";
 
 // Battery
 "Level" = "Уровень заряда";
@@ -309,6 +320,8 @@
 "Last charge" = "Последняя зарядка";
 "Capacity" = "Емкость";
 "maximum / designed" = "максимальная / расчетная";
+"Low power mode" = "Режим пониженного энергопотребления";
+"Percentage inside the icon" = "Процент внутри виджета";
 
 // Bluetooth
 "Battery to show" = "Активная батарея";

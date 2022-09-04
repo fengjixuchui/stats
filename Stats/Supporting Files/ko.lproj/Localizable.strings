@@ -57,6 +57,7 @@
 "Center alignment" = "가운데";
 "Right alignment" = "오른쪽";
 "Dashboard" = "대시보드";
+"Enabled" = "Enabled";
 "Disabled" = "사용 안 함";
 "Silent" = "조용한";
 "Units" = "단위";
@@ -66,6 +67,7 @@
 "Square" = "Square";
 "Cube" = "Cube";
 "Logarithmic" = "Logarithmic";
+"Cores" = "Cores";
 
 // Setup
 "Stats Setup" = "Stats Setup";
@@ -122,6 +124,8 @@
 "Uptime" = "가동 시간";
 "Number of cores" = "%0 코어";
 "Number of threads" = "%0 쓰레드";
+"Number of e-cores" = "%0 efficiency cores";
+"Number of p-cores" = "%0 performance cores";
 
 // Update
 "The latest version of Stats installed" = "최신 버전의 Stats가 설치되어 있습니다";
@@ -196,6 +200,8 @@
 "15 minutes" = "15분";
 "CPU usage threshold" = "CPU 사용량 임계값";
 "CPU usage is" = "CPU 사용량 %0";
+"Efficiency cores" = "Efficiency cores";
+"Performance cores" = "Performance cores";
 
 // GPU
 "GPU to show" = "표시할 GPU";
@@ -250,6 +256,8 @@
 "Fan" = "팬";
 "HID sensors" = "HID 센서";
 "Synchronize fan's control" = "팬 제어 동기화";
+"Current" = "Current";
+"Energy" = "Energy";
 
 // Network
 "Uploading" = "업로드";
@@ -275,6 +283,9 @@
 "Standard" = "표준";
 "Security" = "보안";
 "Channel" = "채널";
+"Common scale" = "Common scale";
+"Autodetection" = "Autodetection";
+"Widget activation threshold" = "Widget activation threshold";
 
 // Battery
 "Level" = "잔량";
@@ -309,6 +320,8 @@
 "Last charge" = "마지막 충전";
 "Capacity" = "용량";
 "maximum / designed" = "최대 / 설계";
+"Low power mode" = "Low power mode";
+"Percentage inside the icon" = "Percentage inside the icon";
 
 // Bluetooth
 "Battery to show" = "표시할 배터리";
