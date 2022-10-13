@@ -64,8 +64,8 @@
 "Fans" = "風扇";
 "Scaling" = "縮放";
 "Linear" = "線性";
-"Square" = "方形";
-"Cube" = "立方體";
+"Square" = "平方";
+"Cube" = "立方";
 "Logarithmic" = "對數";
 "Cores" = "核心數";
 
@@ -118,6 +118,8 @@
 "Start at login" = "登入時打開";
 "Build number" = "組建號碼";
 "Reset settings" = "重置設定";
+"Pause the Stats" = "暫停 Stats";
+"Resume the Stats" = "恢復 Stats";
 
 // Dashboard
 "Serial number" = "序號";
@@ -158,12 +160,12 @@
 "Memory widget" = "容量";
 "Static width" = "靜態寬度";
 "Tachometer widget" = "轉速計";
+"State widget" = "State 小工具";
 "Show symbols" = "顯示符號";
 "Label widget" = "標籤";
 "Number of reads in the chart" = "圖表中的未讀計數";
 "Color of download" = "下載的顯示色彩";
 "Color of upload" = "上傳的顯示色彩";
-"Merge widgets" = "整合型小工具";
 
 // Module Kit
 "Open module settings" = "打開模組設定";
@@ -176,11 +178,16 @@
 "Pictogram" = "標示";
 "Module settings" = "模組設定";
 "Widget settings" = "小工具設定";
+"Popup settings" = "Popup settings";
+"Merge widgets" = "整合型小工具";
+"No available widgets to configure" = "沒有可供組態設定的小工具";
+"No options to configure for the popup in this module" = "No options to configure for the popup in this module";
 
 // Modules
 "Number of top processes" = "高能耗程序數量";
 "Update interval for top processes" = "高能耗程序更新頻率";
 "Notification level" = "通知等級";
+"Chart color" = "Chart color";
 
 // CPU
 "CPU usage" = "處理器使用率";
@@ -202,6 +209,9 @@
 "CPU usage is" = "處理器使用率為：%0";
 "Efficiency cores" = "節能核心";
 "Performance cores" = "效能核心";
+"System color" = "System color";
+"User color" = "User color";
+"Idle color" = "Idle color";
 
 // GPU
 "GPU to show" = "顯示顯示卡";
@@ -237,6 +247,10 @@
 "Split the value (App/Wired/Compressed)" = "分割值 (App/固定/壓縮)";
 "RAM utilization threshold" = "記憶體利用率臨界值";
 "RAM utilization is" = "記憶體利用率為：%0";
+"App color" = "App color";
+"Wired color" = "Wired color";
+"Compressed color" = "Compressed color";
+"Free color" = "Free color";
 
 // Disk
 "Show removable disks" = "顯示抽取式磁碟";
@@ -262,12 +276,12 @@
 // Network
 "Uploading" = "上傳";
 "Downloading" = "下載";
-"Public IP" = "公開 IP";
+"Public IP" = "公用 IP";
 "Local IP" = "區域 IP";
 "Interface" = "介面";
 "Physical address" = "實體位址";
 "Refresh" = "重新整理";
-"Click to copy public IP address" = "點按來拷貝公開 IP 位址";
+"Click to copy public IP address" = "點按來拷貝公用 IP 位址";
 "Click to copy local IP address" = "點按來拷貝區域 IP 位址";
 "Click to copy wifi name" = "點按來拷貝 Wi-Fi 名稱";
 "Click to copy mac address" = "點按來拷貝 MAC 位址";
@@ -286,6 +300,9 @@
 "Common scale" = "統一比例";
 "Autodetection" = "自動檢測";
 "Widget activation threshold" = "小工具啟動臨界點";
+"Internet connection" = "網際網路連線裝態";
+"Active state color" = "已連線狀態色彩";
+"Nonactive state color" = "未連線狀態色彩";
 
 // Battery
 "Level" = "電量";
@@ -319,7 +336,7 @@
 "Hide additional information when full" = "電池充飽後隱藏其他資訊";
 "Last charge" = "最近一次充電";
 "Capacity" = "容量";
-"maximum / designed" = "最大容量 / 設計容量";
+"maximum / designed" = "最大容量/設計容量";
 "Low power mode" = "低電量模式";
 "Percentage inside the icon" = "圖示內百分比";
 
@@ -330,6 +347,7 @@
 // Colors
 "Based on utilization" = "根據使用率";
 "Based on pressure" = "根據壓力";
+"Based on cluster" = "根據群集";
 "System accent" = "系統強調色";
 "Monochrome accent" = "黑白";
 "Clear" = "透明";

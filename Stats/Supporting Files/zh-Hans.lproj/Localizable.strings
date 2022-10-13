@@ -57,15 +57,15 @@
 "Center alignment" = "居中";
 "Right alignment" = "右对齐";
 "Dashboard" = "仪表盘";
-"Enabled" = "Enabled";
+"Enabled" = "已启用";
 "Disabled" = "已停用";
 "Silent" = "运行时静默";
 "Units" = "单位";
 "Fans" = "风扇";
 "Scaling" = "缩放";
 "Linear" = "线性";
-"Square" = "方形";
-"Cube" = "立方体";
+"Square" = "平方";
+"Cube" = "立方";
 "Logarithmic" = "对数";
 "Cores" = "核心数";
 
@@ -118,6 +118,8 @@
 "Start at login" = "登录时打开";
 "Build number" = "版本号";
 "Reset settings" = "初始化所有设置";
+"Pause the Stats" = "暂停 Stats";
+"Resume the Stats" = "恢复 Stats";
 
 // Dashboard
 "Serial number" = "序列号";
@@ -158,12 +160,12 @@
 "Memory widget" = "容量";
 "Static width" = "固定宽度";
 "Tachometer widget" = "转速计";
+"State widget" = "状态小组件";
 "Show symbols" = "显示标识";
 "Label widget" = "标签";
 "Number of reads in the chart" = "图表显示的读取次数";
 "Color of download" = "下载的颜色";
 "Color of upload" = "上传的颜色";
-"Merge widgets" = "合并组件";
 
 // Module Kit
 "Open module settings" = "打开模块设置";
@@ -176,11 +178,16 @@
 "Pictogram" = "标识";
 "Module settings" = "模块设置";
 "Widget settings" = "小组件设置";
+"Popup settings" = "Popup settings";
+"Merge widgets" = "合并组件";
+"No available widgets to configure" = "没有可配置的小组件";
+"No options to configure for the popup in this module" = "No options to configure for the popup in this module";
 
 // Modules
 "Number of top processes" = "高占用进程数";
 "Update interval for top processes" = "高占用进程的更新间隔";
 "Notification level" = "通知级别";
+"Chart color" = "Chart color";
 
 // CPU
 "CPU usage" = "CPU 占用";
@@ -202,6 +209,9 @@
 "CPU usage is" = "CPU 利用率是 %0";
 "Efficiency cores" = "能效核心";
 "Performance cores" = "性能核心";
+"System color" = "System color";
+"User color" = "User color";
+"Idle color" = "Idle color";
 
 // GPU
 "GPU to show" = "显示的 GPU";
@@ -237,6 +247,10 @@
 "Split the value (App/Wired/Compressed)" = "柱状图区分显示（App 内存/联动内存/被压缩）";
 "RAM utilization threshold" = "RAM 占用阈值";
 "RAM utilization is" = "RAM 利用率是 %0";
+"App color" = "App color";
+"Wired color" = "Wired color";
+"Compressed color" = "Compressed color";
+"Free color" = "Free color";
 
 // Disk
 "Show removable disks" = "显示可移动磁盘";
@@ -286,6 +300,9 @@
 "Common scale" = "统一比例";
 "Autodetection" = "自动检测";
 "Widget activation threshold" = "小组件激活阀值";
+"Internet connection" = "网络连接状态";
+"Active state color" = "活跃状态颜色";
+"Nonactive state color" = "非活跃状态颜色";
 
 // Battery
 "Level" = "电量";
@@ -330,6 +347,7 @@
 // Colors
 "Based on utilization" = "基于利用率";
 "Based on pressure" = "基于压力";
+"Based on cluster" = "基于集群";
 "System accent" = "系统强调色";
 "Monochrome accent" = "黑白";
 "Clear" = "透明";

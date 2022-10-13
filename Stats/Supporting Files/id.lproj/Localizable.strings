@@ -118,6 +118,8 @@
 "Start at login" = "Mulai saat login";
 "Build number" = "Build number";
 "Reset settings" = "Atur ulang pengaturan";
+"Pause the Stats" = "Pause the Stats";
+"Resume the Stats" = "Resume the Stats";
 
 // Dashboard
 "Serial number" = "Nomor serial";
@@ -158,12 +160,12 @@
 "Memory widget" = "Memori";
 "Static width" = "Lebar statis";
 "Tachometer widget" = "Takometer";
+"State widget" = "State widget";
 "Show symbols" = "Tampilkan simbol";
 "Label widget" = "Label";
 "Number of reads in the chart" = "Jumlah yang dibaca pada diagram";
 "Color of download" = "Warna pada unduhan";
 "Color of upload" = "Warna pada unggahan";
-"Merge widgets" = "Merge widgets";
 
 // Module Kit
 "Open module settings" = "Buka pengaturan modul";
@@ -176,11 +178,16 @@
 "Pictogram" = "Piktogram";
 "Module settings" = "Pengaturan modul";
 "Widget settings" = "Pengaturan widget";
+"Popup settings" = "Popup settings";
+"Merge widgets" = "Merge widgets";
+"No available widgets to configure" = "No available widgets to configure";
+"No options to configure for the popup in this module" = "No options to configure for the popup in this module";
 
 // Modules
 "Number of top processes" = "Jumlah dari proses teratas";
 "Update interval for top processes" = "Pembaruan waktu jeda dari proses teratas";
 "Notification level" = "Notification level";
+"Chart color" = "Chart color";
 
 // CPU
 "CPU usage" = "Penggunaan CPU";
@@ -202,6 +209,9 @@
 "CPU usage is" = "CPU usage is %0";
 "Efficiency cores" = "Efficiency cores";
 "Performance cores" = "Performance cores";
+"System color" = "System color";
+"User color" = "User color";
+"Idle color" = "Idle color";
 
 // GPU
 "GPU to show" = "GPU yang ditampilkan";
@@ -237,6 +247,10 @@
 "Split the value (App/Wired/Compressed)" = "Pisahkan nilai (App/Wired/Compressed)";
 "RAM utilization threshold" = "RAM utilization threshold";
 "RAM utilization is" = "RAM utilization is %0";
+"App color" = "App color";
+"Wired color" = "Wired color";
+"Compressed color" = "Compressed color";
+"Free color" = "Free color";
 
 // Disk
 "Show removable disks" = "Tampilkan disk yang dapat dilepas";
@@ -286,6 +300,9 @@
 "Common scale" = "Common scale";
 "Autodetection" = "Autodetection";
 "Widget activation threshold" = "Widget activation threshold";
+"Internet connection" = "Internet connection";
+"Active state color" = "Active state color";
+"Nonactive state color" = "Nonactive state color";
 
 // Battery
 "Level" = "Level";
@@ -330,6 +347,7 @@
 // Colors
 "Based on utilization" = "Berdasarkan pemanfaatan";
 "Based on pressure" = "Berdasarkan tekanan";
+"Based on cluster" = "Based on cluster";
 "System accent" = "Aksen berdasarkan sistem";
 "Monochrome accent" = "Akses monokrom";
 "Clear" = "Bening";

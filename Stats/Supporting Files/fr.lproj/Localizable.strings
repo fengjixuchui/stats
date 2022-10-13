@@ -57,17 +57,17 @@
 "Center alignment" = "Centre";
 "Right alignment" = "Droite";
 "Dashboard" = "Dashboard";
-"Enabled" = "Enabled";
-"Disabled" = "Disabled";
+"Enabled" = "Activé";
+"Disabled" = "Désactivé";
 "Silent" = "Silent";
 "Units" = "Units";
 "Fans" = "Ventilateurs";
 "Scaling" = "Scaling";
-"Linear" = "Linear";
-"Square" = "Square";
-"Cube" = "Cube";
-"Logarithmic" = "Logarithmic";
-"Cores" = "Cores";
+"Linear" = "Linéaire";
+"Square" = "Carré";
+"Cube" = "Cubique";
+"Logarithmic" = "Logarithmique";
+"Cores" = "Cœurs";
 
 // Setup
 "Stats Setup" = "Stats Setup";
@@ -118,14 +118,16 @@
 "Start at login" = "Démarrer au lancement";
 "Build number" = "Build number";
 "Reset settings" = "Reset settings";
+"Pause the Stats" = "Pause the Stats";
+"Resume the Stats" = "Resume the Stats";
 
 // Dashboard
 "Serial number" = "Numéro de série";
 "Uptime" = "Disponibilité";
-"Number of cores" = "%0 cores";
+"Number of cores" = "%0 cœurs";
 "Number of threads" = "%0 threads";
-"Number of e-cores" = "%0 efficiency cores";
-"Number of p-cores" = "%0 performance cores";
+"Number of e-cores" = "%0 cœurs à haute efficacité énergétique";
+"Number of p-cores" = "%0 cœurs de performance";
 
 // Update
 "The latest version of Stats installed" = "La dernière version de Stats installée";
@@ -158,6 +160,7 @@
 "Memory widget" = "Mémoire";
 "Static width" = "Largeur fixée";
 "Tachometer widget" = "Tachometer";
+"State widget" = "State widget";
 "Show symbols" = "Show symbols";
 "Label widget" = "Label";
 "Number of reads in the chart" = "Number of reads in the chart";
@@ -175,12 +178,16 @@
 "Pictogram" = "Pictogramme";
 "Module settings" = "Module settings";
 "Widget settings" = "Widget settings";
+"Popup settings" = "Popup settings";
 "Merge widgets" = "Merge widgets";
+"No available widgets to configure" = "No available widgets to configure";
+"No options to configure for the popup in this module" = "No options to configure for the popup in this module";
 
 // Modules
 "Number of top processes" = "Nombre de processus principaux";
 "Update interval for top processes" = "Intervalle de mise à jour des processus principaux";
 "Notification level" = "Notification level";
+"Chart color" = "Chart color";
 
 // CPU
 "CPU usage" = "Usage CPU";
@@ -200,8 +207,11 @@
 "15 minutes" = "15 minutes";
 "CPU usage threshold" = "CPU usage threshold";
 "CPU usage is" = "CPU usage is %0";
-"Efficiency cores" = "Efficiency cores";
-"Performance cores" = "Performance cores";
+"Efficiency cores" = "Cœurs à haute efficacité énergétique";
+"Performance cores" = "Cœurs de performance";
+"System color" = "System color";
+"User color" = "User color";
+"Idle color" = "Idle color";
 
 // GPU
 "GPU to show" = "GPU à afficher";
@@ -237,6 +247,10 @@
 "Split the value (App/Wired/Compressed)" = "Diviser la valeur (Application/Réservée/Compressée)";
 "RAM utilization threshold" = "RAM utilization threshold";
 "RAM utilization is" = "RAM utilization is %0";
+"App color" = "App color";
+"Wired color" = "Wired color";
+"Compressed color" = "Compressed color";
+"Free color" = "Free color";
 
 // Disk
 "Show removable disks" = "Afficher les disques amovibles";
@@ -254,7 +268,7 @@
 "Fahrenheit" = "Fahrenheit";
 "Save the fan speed" = "Sauvegarder la vitesse des ventilateurs";
 "Fan" = "Ventilateur";
-"HID sensors" = "HID sensors";
+"HID sensors" = "Capteurs HID";
 "Synchronize fan's control" = "Synchronize fan's control";
 "Current" = "Current";
 "Energy" = "Energy";
@@ -286,6 +300,9 @@
 "Common scale" = "Common scale";
 "Autodetection" = "Autodetection";
 "Widget activation threshold" = "Widget activation threshold";
+"Internet connection" = "Internet connection";
+"Active state color" = "Active state color";
+"Nonactive state color" = "Nonactive state color";
 
 // Battery
 "Level" = "Niveau";
@@ -330,6 +347,7 @@
 // Colors
 "Based on utilization" = "Basé sur l'utilisation";
 "Based on pressure" = "Basé sur la pression";
+"Based on cluster" = "Based on cluster";
 "System accent" = "Couleur système";
 "Monochrome accent" = "Monochrome";
 "Clear" = "Transparent";

@@ -24,6 +24,7 @@ public enum widget_t: String {
     case memory = "memory"
     case label = "label"
     case tachometer = "tachometer"
+    case state = "state"
     
     public func new(module: String, config: NSDictionary, defaultWidget: widget_t) -> Widget? {
         var image: NSImage? = nil
@@ -68,6 +69,9 @@ public enum widget_t: String {
         case .tachometer:
             preview = Tachometer(title: module, config: widgetConfig, preview: true)
             item = Tachometer(title: module, config: widgetConfig, preview: false)
+        case .state:
+            preview = StateWidget(title: module, config: widgetConfig, preview: true)
+            item = StateWidget(title: module, config: widgetConfig, preview: false)
         default: break
         }
         
@@ -128,6 +132,7 @@ public enum widget_t: String {
         case .memory: return localizedString("Memory widget")
         case .label: return localizedString("Label widget")
         case .tachometer: return localizedString("Tachometer widget")
+        case .state: return localizedString("State widget")
         default: return ""
         }
     }
@@ -286,9 +291,18 @@ public class Widget {
     
     public func setMenuBarItem(state: Bool) {
         if state {
+            let prevTag = "NSStatusItem Preferred Position \(self.module)_\(self.type.name())"
+            let prevPosition = Store.shared.int(key: prevTag, defaultValue: -1)
+            if prevPosition != -1 {
+                Store.shared.set(key: "NSStatusItem Preferred Position \(self.module)_\(self.type.rawValue)", value: prevPosition)
+                Store.shared.remove(prevTag)
+            }
+            
+            restoreNSStatusItemPosition(id: "\(self.module)_\(self.type.rawValue)")
+            
             DispatchQueue.main.async(execute: {
                 self.menuBarItem = NSStatusBar.system.statusItem(withLength: self.item.frame.width)
-                self.menuBarItem?.autosaveName = "\(self.module)_\(self.type.name())"
+                self.menuBarItem?.autosaveName = "\(self.module)_\(self.type.rawValue)"
                 if self.item.frame.origin.x != self.originX {
                     self.item.setFrameOrigin(NSPoint(x: self.originX, y: self.item.frame.origin.y))
                 }
@@ -303,6 +317,7 @@ public class Widget {
                 self.menuBarItem?.button?.sendAction(on: [.leftMouseDown, .rightMouseDown])
             })
         } else if let item = self.menuBarItem {
+            saveNSStatusItemPosition(id: "\(self.module)_\(self.type.rawValue)")
             NSStatusBar.system.removeStatusItem(item)
             self.menuBarItem = nil
         }
@@ -395,6 +410,7 @@ public class MenuBar {
     
     private func setupMenuBarItem(_ state: Bool) {
         if state {
+            restoreNSStatusItemPosition(id: self.moduleName)
             self.menuBarItem = NSStatusBar.system.statusItem(withLength: 0)
             self.menuBarItem?.autosaveName = self.moduleName
             self.menuBarItem?.isVisible = true
@@ -404,6 +420,7 @@ public class MenuBar {
             self.menuBarItem?.button?.action = #selector(self.togglePopup)
             self.menuBarItem?.button?.sendAction(on: [.leftMouseDown, .rightMouseDown])
         } else if let item = self.menuBarItem {
+            saveNSStatusItemPosition(id: self.moduleName)
             NSStatusBar.system.removeStatusItem(item)
             self.menuBarItem = nil
         }

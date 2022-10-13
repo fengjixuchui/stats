@@ -8,7 +8,6 @@
 //
 //  Copyright © 2020 Serhiy Mytrovtsiy. All rights reserved.
 //
-// swiftlint:disable file_length
 
 import Cocoa
 import Kit
@@ -131,6 +130,12 @@ internal class Popup: NSStackView, Popup_p {
             self.setFrameSize(NSSize(width: self.frame.width, height: h))
             self.sizeCallback?(self.frame.size)
         }
+    }
+    
+    // MARK: - Settings
+    
+    public func settings() -> NSView? {
+        return nil
     }
 }
 

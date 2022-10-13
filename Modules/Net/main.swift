@@ -105,6 +105,7 @@ public class Network: Module {
     
     private var usageReader: UsageReader? = nil
     private var processReader: ProcessReader? = nil
+    private var connectivityReader: ConnectivityReader? = nil
     
     private let ipUpdater = NSBackgroundActivityScheduler(identifier: "eu.exelban.Stats.Network.IP")
     private let usageReseter = NSBackgroundActivityScheduler(identifier: "eu.exelban.Stats.Network.Usage")
@@ -127,6 +128,7 @@ public class Network: Module {
         
         self.usageReader = UsageReader()
         self.processReader = ProcessReader()
+        self.connectivityReader = ConnectivityReader()
         
         self.settingsView.callbackWhenUpdateNumberOfProcesses = {
             self.popupView.numberOfProcessesUpdated()
@@ -148,6 +150,10 @@ public class Network: Module {
             }
         }
         
+        self.connectivityReader?.callbackHandler = { [unowned self] value in
+            self.connectivityCallback(value)
+        }
+        
         self.settingsView.callback = { [unowned self] in
             self.usageReader?.getDetails()
             self.usageReader?.read()
@@ -155,11 +161,20 @@ public class Network: Module {
         self.settingsView.usageResetCallback = { [unowned self] in
             self.setUsageReset()
         }
+        self.settingsView.ICMPHostCallback = { [unowned self] isDisabled in
+            if isDisabled {
+                self.popupView.resetConnectivityView()
+                self.connectivityCallback(false)
+            }
+        }
         
         if let reader = self.usageReader {
             self.addReader(reader)
         }
         if let reader = self.processReader {
+            self.addReader(reader)
+        }
+        if let reader = self.connectivityReader {
             self.addReader(reader)
         }
         
@@ -197,6 +212,19 @@ public class Network: Module {
             switch w.item {
             case let widget as SpeedWidget: widget.setValue(upload: upload, download: download)
             case let widget as NetworkChart: widget.setValue(upload: Double(upload), download: Double(download))
+            default: break
+            }
+        }
+    }
+    
+    private func connectivityCallback(_ raw: Bool?) {
+        guard let value = raw, self.enabled else { return }
+        
+        self.popupView.connectivityCallback(value)
+        
+        self.menuBar.widgets.filter{ $0.isActive }.forEach { (w: Widget) in
+            switch w.item {
+            case let widget as StateWidget: widget.setValue(value)
             default: break
             }
         }

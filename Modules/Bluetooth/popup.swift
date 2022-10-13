@@ -61,6 +61,12 @@ internal class Popup: NSStackView, Popup_p {
             }
         }
     }
+    
+    // MARK: - Settings
+    
+    public func settings() -> NSView? {
+        return nil
+    }
 }
 
 internal class BLEView: NSStackView {
@@ -69,6 +75,8 @@ internal class BLEView: NSStackView {
     open override var intrinsicContentSize: CGSize {
         return CGSize(width: self.bounds.width, height: self.bounds.height)
     }
+    
+    private var levels: [NSTextField] = []
     
     public init(width: CGFloat, address: String, name: String, batteryLevel: [KeyValue_t]) {
         self.address = address
@@ -103,8 +111,13 @@ internal class BLEView: NSStackView {
     }
     
     public func update(_ batteryLevel: [KeyValue_t]) {
+        self.levels.filter{ v in !batteryLevel.contains(where: { $0.key == v.identifier?.rawValue }) }.forEach { (v: NSView) in
+            v.removeFromSuperview()
+        }
+        self.levels = self.levels.filter{ v in batteryLevel.contains(where: { $0.key == v.identifier?.rawValue }) }
+        
         batteryLevel.forEach { (pair: KeyValue_t) in
-            if let view = self.subviews.first(where: { $0.identifier?.rawValue == pair.key }) as? NSTextField {
+            if let view = self.levels.first(where: { $0.identifier?.rawValue == pair.key }) {
                 view.stringValue = "\(pair.value)%"
             } else {
                 self.addLevel(pair)
@@ -119,5 +132,6 @@ internal class BLEView: NSStackView {
         valueView.stringValue = "\(pair.value)%"
         valueView.toolTip = pair.key
         self.addArrangedSubview(valueView)
+        self.levels.append(valueView)
     }
 }

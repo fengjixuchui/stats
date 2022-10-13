@@ -118,6 +118,8 @@
 "Start at login" = "로그인시 시작";
 "Build number" = "빌드 번호";
 "Reset settings" = "설정 초기화";
+"Pause the Stats" = "Pause the Stats";
+"Resume the Stats" = "Resume the Stats";
 
 // Dashboard
 "Serial number" = "일련 번호";
@@ -158,12 +160,12 @@
 "Memory widget" = "메모리";
 "Static width" = "너비 고정";
 "Tachometer widget" = "회전 속도계";
+"State widget" = "State widget";
 "Show symbols" = "기호 표시";
 "Label widget" = "레이블";
 "Number of reads in the chart" = "도표의 읽기 횟수";
 "Color of download" = "다운로드 색상";
 "Color of upload" = "업로드 색상";
-"Merge widgets" = "위젯 병합";
 
 // Module Kit
 "Open module settings" = "모듈 설정 열기";
@@ -176,11 +178,16 @@
 "Pictogram" = "그림 그래프";
 "Module settings" = "모듈 설정";
 "Widget settings" = "위젯 설정";
+"Popup settings" = "Popup settings";
+"Merge widgets" = "위젯 병합";
+"No available widgets to configure" = "No available widgets to configure";
+"No options to configure for the popup in this module" = "No options to configure for the popup in this module";
 
 // Modules
 "Number of top processes" = "상위 프로세스 수";
 "Update interval for top processes" = "상위 프로세스의 업데이트 간격";
 "Notification level" = "알림 수준";
+"Chart color" = "Chart color";
 
 // CPU
 "CPU usage" = "CPU 사용량";
@@ -202,6 +209,9 @@
 "CPU usage is" = "CPU 사용량 %0";
 "Efficiency cores" = "Efficiency cores";
 "Performance cores" = "Performance cores";
+"System color" = "System color";
+"User color" = "User color";
+"Idle color" = "Idle color";
 
 // GPU
 "GPU to show" = "표시할 GPU";
@@ -237,6 +247,10 @@
 "Split the value (App/Wired/Compressed)" = "값 분할 (앱/연결됨/압축됨)";
 "RAM utilization threshold" = "RAM 사용률 임계값";
 "RAM utilization is" = "RAM 사용률 %0";
+"App color" = "App color";
+"Wired color" = "Wired color";
+"Compressed color" = "Compressed color";
+"Free color" = "Free color";
 
 // Disk
 "Show removable disks" = "이동식 디스크 표시";
@@ -286,6 +300,9 @@
 "Common scale" = "Common scale";
 "Autodetection" = "Autodetection";
 "Widget activation threshold" = "Widget activation threshold";
+"Internet connection" = "Internet connection";
+"Active state color" = "Active state color";
+"Nonactive state color" = "Nonactive state color";
 
 // Battery
 "Level" = "잔량";
@@ -330,6 +347,7 @@
 // Colors
 "Based on utilization" = "사용률 기준";
 "Based on pressure" = "압력 기준";
+"Based on cluster" = "Based on cluster";
 "System accent" = "시스템 강조";
 "Monochrome accent" = "단색 강조";
 "Clear" = "투명";

@@ -298,16 +298,19 @@ public class LineChartView: NSView {
 public class NetworkChartView: NSView {
     public var id: String = UUID().uuidString
     public var base: DataSizeBase = .byte
-    public var colors: [NSColor] = [NSColor.systemRed, NSColor.systemBlue]
+    public var inColor: NSColor
+    public var outColor: NSColor
     public var points: [(Double, Double)]
     
     private var minMax: Bool = false
     private var scale: Scale = .none
     private var commonScale: Bool = true
     
-    public init(frame: NSRect, num: Int, minMax: Bool = true) {
+    public init(frame: NSRect, num: Int, minMax: Bool = true, outColor: NSColor = .systemRed, inColor: NSColor = .systemBlue) {
         self.minMax = minMax
         self.points = Array(repeating: (0, 0), count: num)
+        self.outColor = outColor
+        self.inColor = inColor
         super.init(frame: frame)
     }
     
@@ -364,11 +367,11 @@ public class NetworkChartView: NSView {
             downloadlinePath.line(to: CGPoint(x: columnXPoint(i), y: downloadYPoint(i)))
         }
         
-        self.colors[0].setStroke()
+        self.outColor.setStroke()
         uploadlinePath.lineWidth = lineWidth
         uploadlinePath.stroke()
         
-        self.colors[1].setStroke()
+        self.inColor.setStroke()
         downloadlinePath.lineWidth = lineWidth
         downloadlinePath.stroke()
         
@@ -379,7 +382,7 @@ public class NetworkChartView: NSView {
         underLinePath.line(to: CGPoint(x: columnXPoint(0), y: zero))
         underLinePath.close()
         underLinePath.addClip()
-        self.colors[0].withAlphaComponent(0.5).setFill()
+        self.outColor.withAlphaComponent(0.5).setFill()
         NSBezierPath(rect: dirtyRect).fill()
         
         context.restoreGState()
@@ -390,7 +393,7 @@ public class NetworkChartView: NSView {
         underLinePath.line(to: CGPoint(x: columnXPoint(0), y: zero))
         underLinePath.close()
         underLinePath.addClip()
-        self.colors[1].withAlphaComponent(0.5).setFill()
+        self.inColor.withAlphaComponent(0.5).setFill()
         NSBezierPath(rect: dirtyRect).fill()
         
         context.restoreGState()
@@ -443,6 +446,23 @@ public class NetworkChartView: NSView {
             self.display()
         }
     }
+    
+    public func setColors(in inColor: NSColor? = nil, out outColor: NSColor? = nil) {
+        var needUpdate: Bool = false
+        
+        if let newColor = inColor, self.inColor != newColor {
+            self.inColor = newColor
+            needUpdate = true
+        }
+        if let newColor = outColor, self.outColor != newColor {
+            self.outColor = newColor
+            needUpdate = true
+        }
+        
+        if needUpdate && self.window?.isVisible ?? false {
+            self.display()
+        }
+    }
 }
 
 public class PieChartView: NSView {
@@ -450,6 +470,7 @@ public class PieChartView: NSView {
     
     private var filled: Bool = false
     private var drawValue: Bool = false
+    private var nonActiveSegmentColor: NSColor = NSColor.lightGray
     
     private var value: Double? = nil
     private var segments: [circle_segment] = []
@@ -472,7 +493,7 @@ public class PieChartView: NSView {
         var segments = self.segments
         let totalAmount = segments.reduce(0) { $0 + $1.value }
         if totalAmount < 1 {
-            segments.append(circle_segment(value: Double(1-totalAmount), color: NSColor.lightGray.withAlphaComponent(0.5)))
+            segments.append(circle_segment(value: Double(1-totalAmount), color: self.nonActiveSegmentColor.withAlphaComponent(0.5)))
         }
         
         let centerPoint = CGPoint(x: rect.midX, y: rect.midY)
@@ -530,6 +551,14 @@ public class PieChartView: NSView {
         var original = self.frame
         original = frame
         self.frame = original
+    }
+    
+    public func setNonActiveSegmentColor(_ newColor: NSColor) {
+        guard self.nonActiveSegmentColor != newColor else { return }
+        self.nonActiveSegmentColor = newColor
+        if self.window?.isVisible ?? false {
+            self.display()
+        }
     }
 }
 
