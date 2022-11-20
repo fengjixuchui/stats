@@ -145,7 +145,7 @@ public class ProcessReader: Reader<[TopProcess]> {
         
         var processes: [TopProcess] = []
         output.enumerateLines { (line, _) -> Void in
-            if line.matches("^\\d+ +.* +\\d+[A-Z]*\\+?\\-? *$") {
+            if line.matches("^\\d+\\** +.* +\\d+[A-Z]*\\+?\\-? *$") {
                 processes.append(ProcessReader.parseProcess(line))
             }
         }
@@ -154,10 +154,14 @@ public class ProcessReader: Reader<[TopProcess]> {
     }
     
     static public func parseProcess(_ raw: String) -> TopProcess {
-        let str = raw.trimmingCharacters(in: .whitespaces)
+        var str = raw.trimmingCharacters(in: .whitespaces)
         let pidString = str.find(pattern: "^\\d+")
         
-        var arr = str.replacingOccurrences(of: pidString, with: "").split(separator: " ")
+        if let range = str.range(of: pidString) {
+            str = str.replacingCharacters(in: range, with: "")
+        }
+        
+        var arr = str.split(separator: " ")
         if arr.first == "*" {
             arr.removeFirst()
         }

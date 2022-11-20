@@ -40,6 +40,11 @@ public class Sensors: Module {
             self.popupView.setup(self.sensorsReader.list)
             self.settingsView.setList(list: self.sensorsReader.list)
         }
+        self.settingsView.unknownCallback = { [unowned self] in
+            self.sensorsReader.unknownCallback()
+            self.popupView.setup(self.sensorsReader.list)
+            self.settingsView.setList(list: self.sensorsReader.list)
+        }
         
         self.sensorsReader.callbackHandler = { [unowned self] value in
             self.usageCallback(value)
@@ -52,9 +57,7 @@ public class Sensors: Module {
     }
     
     public override func willTerminate() {
-        if !SMCHelper.shared.checkRights() {
-            return
-        }
+        guard SMCHelper.shared.isActive() else { return }
         
         self.sensorsReader.list.filter({ $0 is Fan }).forEach { (s: Sensor_p) in
             if let f = s as? Fan, let mode = f.customMode {

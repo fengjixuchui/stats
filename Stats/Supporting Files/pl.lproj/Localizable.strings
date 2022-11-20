@@ -212,6 +212,7 @@
 "System color" = "Kolor systemu";
 "User color" = "Kolor użytkownika";
 "Idle color" = "Nieaktywny kolor";
+"Cluster grouping" = "Grupowanie klastrów";
 
 // GPU
 "GPU to show" = "GPU do wyświetlenia";
@@ -272,6 +273,7 @@
 "Synchronize fan's control" = "Synchronizuj sterowanie wentylatorami";
 "Current" = "Prąd";
 "Energy" = "Energia";
+"Show unknown sensors" = "Pokaż nieznane czujniki";
 
 // Network
 "Uploading" = "Wysyłanie";
@@ -303,6 +305,8 @@
 "Internet connection" = "Połączenie internetowe";
 "Active state color" = "Kolor stanu aktywnego";
 "Nonactive state color" = "Kolor stanu nieaktywnego";
+"Connectivity host (ICMP)" = "Host łączności (ICMP)";
+"Leave empty to disable the check" = "Pozostaw puste, aby wyłączyć sprawdzanie";
 
 // Battery
 "Level" = "Poziom naładowania";

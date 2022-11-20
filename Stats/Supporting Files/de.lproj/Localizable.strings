@@ -212,6 +212,7 @@
 "System color" = "System color";
 "User color" = "User color";
 "Idle color" = "Idle color";
+"Cluster grouping" = "Cluster grouping";
 
 // GPU
 "GPU to show" = "GPU auswählen";
@@ -272,6 +273,7 @@
 "Synchronize fan's control" = "Lüfter synchron halten";
 "Current" = "Current";
 "Energy" = "Energy";
+"Show unknown sensors" = "Show unknown sensors";
 
 // Network
 "Uploading" = "Upload";
@@ -303,6 +305,8 @@
 "Internet connection" = "Internet connection";
 "Active state color" = "Active state color";
 "Nonactive state color" = "Nonactive state color";
+"Connectivity host (ICMP)" = "Connectivity host (ICMP)";
+"Leave empty to disable the check" = "Leave empty to disable the check";
 
 // Battery
 "Level" = "Ladezustand";
@@ -318,7 +322,7 @@
 "Power adapter" = "Netzteil";
 "Power" = "Leistung";
 "Is charging" = "wird aufgeladen";
-"Time to discharge" = "Entladedauer";
+"Time to discharge" = "verbleibend";
 "Time to charge" = "Ladedauer";
 "Calculating" = "Berechnen...";
 "Fully charged" = "vollständig aufgeladen";

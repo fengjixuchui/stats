@@ -212,6 +212,7 @@
 "System color" = "System color";
 "User color" = "User color";
 "Idle color" = "Idle color";
+"Cluster grouping" = "Cluster grouping";
 
 // GPU
 "GPU to show" = "Grafički procesor";
@@ -272,6 +273,7 @@
 "Synchronize fan's control" = "Sinkroniziraj upravljanje ventilatora";
 "Current" = "Current";
 "Energy" = "Energy";
+"Show unknown sensors" = "Show unknown sensors";
 
 // Network
 "Uploading" = "Slanje";
@@ -303,6 +305,8 @@
 "Internet connection" = "Internet connection";
 "Active state color" = "Active state color";
 "Nonactive state color" = "Nonactive state color";
+"Connectivity host (ICMP)" = "Connectivity host (ICMP)";
+"Leave empty to disable the check" = "Leave empty to disable the check";
 
 // Battery
 "Level" = "Stanje";
