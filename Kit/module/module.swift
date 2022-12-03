@@ -39,6 +39,11 @@ public struct module_c {
         if let state = dict["State"] as? Bool {
             self.defaultState = state
         }
+        if let symbol = dict["Symbol"] as? String {
+            if #available(macOS 11.0, *) {
+                self.icon = NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
+            }
+        }
         
         if let widgetsDict = dict["Widgets"] as? NSDictionary {
             var list: [String: Int] = [:]
@@ -131,13 +136,6 @@ open class Module: Module_p {
             moduleSettings: self.settingsView,
             popupSettings: self.popupView
         )
-        self.settings?.toggleCallback = { [weak self] in
-            self?.toggleEnabled()
-            if self?.pauseState == true {
-                self?.pauseState = false
-                NotificationCenter.default.post(name: .pause, object: nil, userInfo: ["state": false])
-            }
-        }
         
         self.popup = PopupWindow(title: self.config.name, view: self.popupView, visibilityCallback: self.visibilityCallback)
     }
@@ -206,15 +204,6 @@ open class Module: Module_p {
         self.settings?.setState(self.enabled)
         self.popup?.setIsVisible(false)
         debug("Module disabled", log: self.log)
-    }
-    
-    // toggle module state
-    private func toggleEnabled() {
-        if self.enabled {
-            self.disable()
-        } else {
-            self.enable()
-        }
     }
     
     // add reader to module. If module is enabled will fire a read function and start a reader
@@ -320,7 +309,18 @@ open class Module: Module_p {
                     } else if !state && self.enabled {
                         self.disable()
                     }
+                } else {
+                    if self.enabled {
+                        self.disable()
+                    } else {
+                        self.enable()
+                    }
                 }
+            }
+            
+            if self.pauseState == true {
+                self.pauseState = false
+                NotificationCenter.default.post(name: .pause, object: nil, userInfo: ["state": false])
             }
         }
     }
