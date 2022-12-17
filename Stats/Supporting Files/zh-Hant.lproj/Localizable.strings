@@ -68,6 +68,7 @@
 "Cube" = "立方";
 "Logarithmic" = "對數";
 "Cores" = "核心數";
+"Settings" = "設定";
 
 // Setup
 "Stats Setup" = "Stats 設定";
@@ -274,6 +275,8 @@
 "Current" = "電流";
 "Energy" = "能耗";
 "Show unknown sensors" = "顯示未知的感知器";
+"Install fan helper" = "Install fan helper";
+"Uninstall fan helper" = "Uninstall fan helper";
 
 // Network
 "Uploading" = "上傳";
@@ -307,7 +310,7 @@
 "Nonactive state color" = "未連線狀態色彩";
 "Connectivity host (ICMP)" = "連線主機 (ICMP)";
 "Leave empty to disable the check" = "留空來停用檢查";
-"Transparent pictogram when no activity" = "Transparent pictogram when no activity";
+"Transparent pictogram when no activity" = "未連線時隱藏標示";
 
 // Battery
 "Level" = "電量";

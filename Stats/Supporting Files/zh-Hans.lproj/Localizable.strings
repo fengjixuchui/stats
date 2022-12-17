@@ -68,6 +68,7 @@
 "Cube" = "立方";
 "Logarithmic" = "对数";
 "Cores" = "核心数";
+"Settings" = "设置";
 
 // Setup
 "Stats Setup" = "Stats 设置";
@@ -274,6 +275,8 @@
 "Current" = "电流";
 "Energy" = "能耗";
 "Show unknown sensors" = "显示未知的传感器";
+"Install fan helper" = "Install fan helper";
+"Uninstall fan helper" = "Uninstall fan helper";
 
 // Network
 "Uploading" = "上传";
@@ -307,7 +310,7 @@
 "Nonactive state color" = "非活跃状态颜色";
 "Connectivity host (ICMP)" = "连接Host (ICMP)";
 "Leave empty to disable the check" = "不在该选项内输入以禁用检查";
-"Transparent pictogram when no activity" = "Transparent pictogram when no activity";
+"Transparent pictogram when no activity" = "不活跃时隐藏标识";
 
 // Battery
 "Level" = "电量";

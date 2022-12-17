@@ -68,6 +68,7 @@
 "Cube" = "Kubiczne";
 "Logarithmic" = "Logarytmiczne";
 "Cores" = "Rdzeni";
+"Settings" = "Ustawienia";
 
 // Setup
 "Stats Setup" = "Konfiguracja Stats";
@@ -274,6 +275,8 @@
 "Current" = "Prąd";
 "Energy" = "Energia";
 "Show unknown sensors" = "Pokaż nieznane czujniki";
+"Install fan helper" = "Zainstaluj narzędzie do wentylatora";
+"Uninstall fan helper" = "Odinstaluj narzędzie do wentylatora";
 
 // Network
 "Uploading" = "Wysyłanie";

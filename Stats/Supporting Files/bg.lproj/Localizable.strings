@@ -68,6 +68,7 @@
 "Cube" = "Кубично";
 "Logarithmic" = "Логаритмично";
 "Cores" = "Ядра";
+"Settings" = "Settings";
 
 // Setup
 "Stats Setup" = "Настройки на Stats";
@@ -274,6 +275,8 @@
 "Current" = "Текущо";
 "Energy" = "Енергия";
 "Show unknown sensors" = "Показване на непознатите сензори";
+"Install fan helper" = "Install fan helper";
+"Uninstall fan helper" = "Uninstall fan helper";
 
 // Network
 "Uploading" = "Качване";

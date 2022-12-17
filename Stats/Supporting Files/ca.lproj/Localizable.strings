@@ -68,6 +68,7 @@
 "Cube" = "Cube";
 "Logarithmic" = "Logarithmic";
 "Cores" = "Cores";
+"Settings" = "Settings";
 
 // Setup
 "Stats Setup" = "Stats Setup";
@@ -274,6 +275,8 @@
 "Current" = "Current";
 "Energy" = "Energy";
 "Show unknown sensors" = "Show unknown sensors";
+"Install fan helper" = "Install fan helper";
+"Uninstall fan helper" = "Uninstall fan helper";
 
 // Network
 "Uploading" = "Carregant";

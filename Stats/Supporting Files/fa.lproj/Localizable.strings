@@ -68,6 +68,7 @@
 "Cube" = "مکعب";
 "Logarithmic" = "لگاریتمی";
 "Cores" = "هسته ها";
+"Settings" = "Settings";
 
 // Setup
 "Stats Setup" = "نصب Stats";
@@ -274,6 +275,8 @@
 "Current" = "جریان";
 "Energy" = "انرژی";
 "Show unknown sensors" = "نمایش سنسور‌های ناشناخته";
+"Install fan helper" = "Install fan helper";
+"Uninstall fan helper" = "Uninstall fan helper";
 
 // Network
 "Uploading" = "آپلود";
