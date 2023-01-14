@@ -18,6 +18,7 @@ internal class Settings: NSStackView, Settings_v {
     private var fanSpeedState: Bool = false
     private var fansSyncState: Bool = false
     private var unknownSensorsState: Bool = false
+    private var fanValueState: FanValue = .percentage
     
     private let title: String
     private var button: NSPopUpButton?
@@ -52,6 +53,7 @@ internal class Settings: NSStackView, Settings_v {
         self.fanSpeedState = Store.shared.bool(key: "\(self.title)_speed", defaultValue: self.fanSpeedState)
         self.fansSyncState = Store.shared.bool(key: "\(self.title)_fansSync", defaultValue: self.fansSyncState)
         self.unknownSensorsState = Store.shared.bool(key: "\(self.title)_unknown", defaultValue: self.unknownSensorsState)
+        self.fanValueState = FanValue(rawValue: Store.shared.string(key: "\(self.title)_fanValue", defaultValue: self.fanValueState.rawValue)) ?? .percentage
     }
     
     required init?(coder: NSCoder) {
@@ -59,9 +61,14 @@ internal class Settings: NSStackView, Settings_v {
     }
     
     public func load(widgets: [widget_t]) {
-        guard !self.list.isEmpty else {
+        var sensors = self.list
+        guard !sensors.isEmpty else {
             return
         }
+        if !self.unknownSensorsState {
+            sensors = sensors.filter({ $0.group != .unknown })
+        }
+        
         self.subviews.forEach{ $0.removeFromSuperview() }
         
         self.addArrangedSubview(selectSettingsRowV1(
@@ -83,6 +90,13 @@ internal class Settings: NSStackView, Settings_v {
             state: self.fansSyncState
         ))
         
+        self.addArrangedSubview(selectSettingsRow(
+            title: localizedString("Fan value"),
+            action: #selector(toggleFanValue),
+            items: FanValues,
+            selected: self.fanValueState.rawValue
+        ))
+        
         if isARM {
             self.addArrangedSubview(toggleSettingRow(
                 title: localizedString("HID sensors"),
@@ -98,7 +112,7 @@ internal class Settings: NSStackView, Settings_v {
         ))
         
         var types: [SensorType] = []
-        self.list.forEach { (s: Sensor_p) in
+        sensors.forEach { (s: Sensor_p) in
             if !types.contains(s.type) {
                 types.append(s.type)
             }
@@ -118,7 +132,7 @@ internal class Settings: NSStackView, Settings_v {
             
             self.addArrangedSubview(header)
             
-            let filtered = self.list.filter{ $0.type == typ }
+            let filtered = sensors.filter{ $0.type == typ }
             var groups: [SensorGroup] = []
             filtered.forEach { (s: Sensor_p) in
                 if !groups.contains(s.group) {
@@ -149,7 +163,7 @@ internal class Settings: NSStackView, Settings_v {
                     container.addArrangedSubview(row)
                 }
             }
-
+            
             self.addArrangedSubview(container)
         }
         
@@ -157,7 +171,7 @@ internal class Settings: NSStackView, Settings_v {
     }
     
     public func setList(list: [Sensor_p]) {
-        self.list = list
+        self.list = self.unknownSensorsState ? list : list.filter({ $0.group != .unknown })
         self.load(widgets: self.widgets)
     }
     
@@ -196,5 +210,13 @@ internal class Settings: NSStackView, Settings_v {
         self.unknownSensorsState = controlState(sender)
         Store.shared.set(key: "\(self.title)_unknown", value: self.unknownSensorsState)
         self.unknownCallback()
+    }
+    
+    @objc func toggleFanValue(_ sender: NSMenuItem) {
+        if let key = sender.representedObject as? String, let value = FanValue(rawValue: key) {
+            self.fanValueState = value
+            Store.shared.set(key: "\(self.title)_fanValue", value: self.fanValueState.rawValue)
+            self.callback()
+        }
     }
 }

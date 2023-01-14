@@ -220,13 +220,7 @@ public extension Notification.Name {
 }
 
 public var isARM: Bool {
-    get {
-        var value = false
-        #if arch(arm64)
-        value = true
-        #endif
-        return value
-    }
+    SystemKit.shared.device.platform != .intel
 }
 
 public let notificationLevels: [KeyValue_t] = [
@@ -277,3 +271,12 @@ extension Scale: CaseIterable {
         return Scale.allCases.first{ $0.key == key } ?? defaultValue
     }
 }
+
+public enum FanValue: String {
+    case rpm
+    case percentage
+}
+public let FanValues: [KeyValue_t] = [
+    KeyValue_t(key: "rpm", value: "RPM", additional: FanValue.rpm),
+    KeyValue_t(key: "percentage", value: "Percentage", additional: FanValue.percentage)
+]
