@@ -121,6 +121,8 @@
 "Reset settings" = "Nullstill innstillinger";
 "Pause the Stats" = "Sett Stats på pause";
 "Resume the Stats" = "Gjenoppta Stats";
+"Combined modules" = "Combined modules";
+"Spacing" = "Spacing";
 
 // Dashboard
 "Serial number" = "Serienummer";
@@ -214,6 +216,8 @@
 "User color" = "Brukerfarge";
 "Idle color" = "Tomgangsfarge";
 "Cluster grouping" = "Klyngegruppering";
+"Efficiency cores color" = "Efficiency cores color";
+"Performance cores color" = "Performance cores color";
 
 // GPU
 "GPU to show" = "GPU å vise";

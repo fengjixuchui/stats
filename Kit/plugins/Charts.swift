@@ -11,15 +11,6 @@
 
 import Cocoa
 
-public enum chart_t: Int {
-    case line = 0
-    case bar = 1
-    
-    init?(value: Int) {
-        self.init(rawValue: value)
-    }
-}
-
 public struct circle_segment {
     public let value: Double
     public var color: NSColor
@@ -83,15 +74,16 @@ public class LineChartView: NSView {
     public var points: [Double]
     public var shadowPoints: [Double] = []
     public var transparent: Bool = true
-    public var color: NSColor = controlAccentColor
+    public var color: NSColor = .controlAccentColor
     public var suffix: String = "%"
-    public var scale: Scale = .none
+    public var scale: Scale
     
     private var cursor: NSPoint? = nil
     private var stop: Bool = false
     
-    public init(frame: NSRect, num: Int) {
+    public init(frame: NSRect, num: Int, scale: Scale = .none) {
         self.points = Array(repeating: 0, count: num)
+        self.scale = scale
         
         super.init(frame: frame)
         
@@ -133,8 +125,8 @@ public class LineChartView: NSView {
         context.setShouldAntialias(true)
         
         let offset: CGFloat = 1 / (NSScreen.main?.backingScaleFactor ?? 1)
-        let height: CGFloat = self.frame.size.height - self.frame.origin.y - offset
-        let xRatio: CGFloat = self.frame.size.width / CGFloat(points.count)
+        let height: CGFloat = dirtyRect.height - self.frame.origin.y - offset
+        let xRatio: CGFloat = dirtyRect.width / CGFloat(points.count-1)
         
         let list = points.enumerated().compactMap { (i: Int, v: Double) -> (value: Double, point: CGPoint) in
             return (v, CGPoint(
@@ -156,8 +148,8 @@ public class LineChartView: NSView {
         line.stroke()
         
         let underLinePath = line.copy() as! NSBezierPath
-        underLinePath.line(to: CGPoint(x: list[list.count-1].point.x, y: offset))
-        underLinePath.line(to: CGPoint(x: list[0].point.x, y: offset))
+        underLinePath.line(to: CGPoint(x: list[list.count-1].point.x, y: 0))
+        underLinePath.line(to: CGPoint(x: list[0].point.x, y: 0))
         underLinePath.close()
         gradientColor.set()
         underLinePath.fill()
@@ -699,5 +691,62 @@ public class TachometerGraphView: NSView {
         var original = self.frame
         original = frame
         self.frame = original
+    }
+}
+
+public class BarChartView: NSView {
+    private var values: [ColorValue] = []
+    
+    public init(frame: NSRect, num: Int) {
+        super.init(frame: frame)
+        self.values = Array(repeating: ColorValue(0, color: .controlAccentColor), count: num)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func draw(_ dirtyRect: NSRect) {
+        let blocks: Int = 16
+        let spacing: CGFloat = 2
+        let count: CGFloat = CGFloat(self.values.count)
+        let partitionSize: CGSize = CGSize(width: (self.frame.width - (count*spacing)) / count, height: self.frame.height)
+        let blockSize = CGSize(width: partitionSize.width-(spacing*2), height: ((partitionSize.height - spacing - 1)/CGFloat(blocks))-1)
+        
+        var x: CGFloat = 0
+        for i in 0..<self.values.count {
+            let partition = NSBezierPath(
+                roundedRect: NSRect(x: x, y: 0, width: partitionSize.width, height: partitionSize.height),
+                xRadius: 3, yRadius: 3
+            )
+            NSColor.underPageBackgroundColor.withAlphaComponent(0.5).setFill()
+            partition.fill()
+            partition.close()
+            
+            let value = self.values[i]
+            let color = value.color ?? .controlAccentColor
+            let activeBlockNum = Int(round(value.value*Double(blocks)))
+            
+            var y: CGFloat = spacing
+            for b in 0..<blocks {
+                let block = NSBezierPath(
+                    roundedRect: NSRect(x: x+spacing, y: y, width: blockSize.width, height: blockSize.height),
+                    xRadius: 1, yRadius: 1
+                )
+                (activeBlockNum <= b ? NSColor.controlBackgroundColor.withAlphaComponent(0.4) : color).setFill()
+                block.fill()
+                block.close()
+                y += blockSize.height + 1
+            }
+            
+            x += partitionSize.width + spacing
+        }
+    }
+    
+    public func setValues(_ values: [ColorValue]) {
+        self.values = values
+        if self.window?.isVisible ?? false {
+            self.display()
+        }
     }
 }

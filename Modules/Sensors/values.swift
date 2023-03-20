@@ -35,6 +35,7 @@ internal protocol Sensor_p {
     var name: String { get }
     var value: Double { get set }
     var state: Bool { get }
+    var popupState: Bool { get }
     
     var group: SensorGroup { get }
     var type: SensorType { get }
@@ -45,6 +46,7 @@ internal protocol Sensor_p {
     var unit: String { get }
     var formattedValue: String { get }
     var formattedMiniValue: String { get }
+    var formattedPopupValue: String { get }
 }
 
 internal struct Sensor: Sensor_p {
@@ -97,6 +99,25 @@ internal struct Sensor: Sensor_p {
             }
         }
     }
+    var formattedPopupValue: String {
+        get {
+            switch self.type {
+            case .temperature:
+                return Temperature(value, fractionDigits: 1)
+            case .voltage:
+                let val = value >= 100 ? "\(Int(value))" : String(format: "%.3f", value)
+                return "\(val)\(unit)"
+            case .power, .energy:
+                let val = value >= 100 ? "\(Int(value))" : String(format: "%.2f", value)
+                return "\(val)\(unit)"
+            case .current:
+                let val = value >= 100 ? "\(Int(value))" : String(format: "%.2f", value)
+                return "\(val)\(unit)"
+            case .fan:
+                return "\(Int(value)) \(unit)"
+            }
+        }
+    }
     var formattedMiniValue: String {
         get {
             switch self.type {
@@ -112,13 +133,14 @@ internal struct Sensor: Sensor_p {
     }
     
     var state: Bool {
-        get {
-            return Store.shared.bool(key: "sensor_\(self.key)", defaultValue: false)
-        }
+        Store.shared.bool(key: "sensor_\(self.key)", defaultValue: false)
+    }
+    var popupState: Bool {
+        Store.shared.bool(key: "sensor_\(self.key)_popup", defaultValue: true)
     }
     
     func copy() -> Sensor {
-        return Sensor(
+        Sensor(
             key: self.key,
             name: self.name,
             group: self.group,
@@ -134,8 +156,8 @@ internal struct Fan: Sensor_p {
     let id: Int
     var key: String
     var name: String
-    let minSpeed: Double
-    let maxSpeed: Double
+    var minSpeed: Double
+    var maxSpeed: Double
     var value: Double
     var mode: FanMode
     
@@ -155,20 +177,20 @@ internal struct Fan: Sensor_p {
     var unit: String = "RPM"
     
     var formattedValue: String {
-        get {
-            return "\(Int(value)) RPM"
-        }
+        "\(Int(value)) RPM"
     }
     var formattedMiniValue: String {
-        get {
-            return "\(Int(value))"
-        }
+        "\(Int(value))"
+    }
+    var formattedPopupValue: String {
+        "\(Int(value)) RPM"
     }
     
     var state: Bool {
-        get {
-            return Store.shared.bool(key: "sensor_\(self.key)", defaultValue: false)
-        }
+        Store.shared.bool(key: "sensor_\(self.key)", defaultValue: false)
+    }
+    var popupState: Bool {
+        Store.shared.bool(key: "sensor_\(self.key)_popup", defaultValue: true)
     }
     
     var customSpeed: Int? {

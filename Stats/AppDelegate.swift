@@ -40,6 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     internal let updateActivity = NSBackgroundActivityScheduler(identifier: "eu.exelban.Stats.updateCheck")
     internal var clickInNotification: Bool = false
     internal var menuBarItem: NSStatusItem? = nil
+    internal var combinedView: CombinedView = CombinedView()
     
     internal var pauseState: Bool {
         Store.shared.bool(key: "pause", defaultValue: false)
@@ -57,6 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         
         self.parseArguments()
         self.parseVersion()
+        SMCHelper.shared.checkForUpdate()
         self.setup {
             modules.forEach{ $0.mount() }
             self.settingsWindow.setModules()
@@ -92,7 +94,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         return true
     }
     
-    @available(macOS 10.14, *)
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -102,7 +103,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             debug("Downloading new version of app...")
             if let url = URL(string: uri) {
                 updater.download(url, completion: { path in
-                    updater.install(path: path)
+                    updater.install(path: path) { error in
+                        if let error {
+                            showAlert("Error update Stats", error, .critical)
+                        }
+                    }
                 })
             }
         }

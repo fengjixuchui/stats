@@ -121,6 +121,8 @@
 "Reset settings" = "Ayarları sıfırla";
 "Pause the Stats" = "Stats'ı Duraklat";
 "Resume the Stats" = "Stats'ı Sürdür";
+"Combined modules" = "Combined modules";
+"Spacing" = "Spacing";
 
 // Dashboard
 "Serial number" = "Seri numarası";
@@ -214,6 +216,8 @@
 "User color" = "Kullanıcı rengi";
 "Idle color" = "Bekleme rengi";
 "Cluster grouping" = "Küme gruplaması";
+"Efficiency cores color" = "Efficiency cores color";
+"Performance cores color" = "Performance cores color";
 
 // GPU
 "GPU to show" = "Gösterilecek GPU";

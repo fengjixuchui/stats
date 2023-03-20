@@ -54,6 +54,26 @@ public let TemperatureUnits: [KeyValue_t] = [
     KeyValue_t(key: "fahrenheit", value: "Fahrenheit", additional: UnitTemperature.fahrenheit)
 ]
 
+public let CombinedModulesSpacings: [KeyValue_t] = [
+    KeyValue_t(key: "none", value: "None"),
+    KeyValue_t(key: "1", value: "1", additional: 1),
+    KeyValue_t(key: "2", value: "2", additional: 2),
+    KeyValue_t(key: "3", value: "3", additional: 3),
+    KeyValue_t(key: "4", value: "4", additional: 4),
+    KeyValue_t(key: "5", value: "5", additional: 5),
+    KeyValue_t(key: "6", value: "6", additional: 6),
+    KeyValue_t(key: "7", value: "7", additional: 7),
+    KeyValue_t(key: "8", value: "8", additional: 8)
+]
+
+public let PublicIPAddressRefreshIntervals: [KeyValue_t] = [
+    KeyValue_t(key: "never", value: "Never"),
+    KeyValue_t(key: "separator", value: "separator"),
+    KeyValue_t(key: "hour", value: "Every hour"),
+    KeyValue_t(key: "12", value: "Every 12 hours"),
+    KeyValue_t(key: "24", value: "Every 24 hours")
+]
+
 public enum DataSizeBase: String {
     case bit
     case byte
@@ -83,6 +103,13 @@ public let BatteryAdditionals: [KeyValue_t] = [
     KeyValue_t(key: "separator", value: "separator"),
     KeyValue_t(key: "innerPercentage", value: "Percentage inside the icon"),
     KeyValue_t(key: "separator", value: "separator"),
+    KeyValue_t(key: "percentage", value: "Percentage"),
+    KeyValue_t(key: "time", value: "Time"),
+    KeyValue_t(key: "percentageAndTime", value: "Percentage and time"),
+    KeyValue_t(key: "timeAndPercentage", value: "Time and percentage")
+]
+
+public let BatteryInfo: [KeyValue_t] = [
     KeyValue_t(key: "percentage", value: "Percentage"),
     KeyValue_t(key: "time", value: "Time"),
     KeyValue_t(key: "percentageAndTime", value: "Percentage and time"),
@@ -126,7 +153,7 @@ extension Color: CaseIterable {
     
     public static var separator1: Color { return Color(key: "separator_1", value: "separator_1", additional: NSColor.black) }
     
-    public static var systemAccent: Color { return Color(key: "system", value: "System accent", additional: controlAccentColor) }
+    public static var systemAccent: Color { return Color(key: "system", value: "System accent", additional: NSColor.controlAccentColor) }
     public static var monochrome: Color { return Color(key: "monochrome", value: "Monochrome accent", additional: NSColor.textColor) }
     
     public static var separator2: Color { return Color(key: "separator_2", value: "separator_2", additional: NSColor.black) }
@@ -185,16 +212,6 @@ extension Color: CaseIterable {
     }
 }
 
-public var controlAccentColor: NSColor {
-    get {
-        if #available(OSX 10.14, *) {
-            return NSColor.controlAccentColor
-        } else {
-            return NSColor.systemBlue
-        }
-    }
-}
-
 public class MonochromeColor {
     static public let base: NSColor = NSColor.textColor
     static public let red: NSColor = NSColor(red: (145), green: (145), blue: (145), alpha: 1)
@@ -216,6 +233,7 @@ public extension Notification.Name {
     static let fanHelperState = Notification.Name("fanHelperState")
     static let toggleOneView = Notification.Name("toggleOneView")
     static let widgetRearrange = Notification.Name("widgetRearrange")
+    static let moduleRearrange = Notification.Name("moduleRearrange")
     static let pause = Notification.Name("pause")
 }
 

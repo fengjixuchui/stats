@@ -78,6 +78,19 @@ open class Module: Module_p {
     
     public var menuBar: MenuBar
     public var settings: Settings_p? = nil
+    public let portal: Portal_p?
+    
+    public var name: String {
+        config.name
+    }
+    public var combinedPosition: Int {
+        get {
+            Store.shared.int(key: "\(self.name)_position", defaultValue: 0)
+        }
+        set {
+            Store.shared.set(key: "\(self.name)_position", value: newValue)
+        }
+    }
     
     private var settingsView: Settings_v? = nil
     private var popup: PopupWindow? = nil
@@ -88,14 +101,15 @@ open class Module: Module_p {
     
     private var pauseState: Bool {
         get {
-            return Store.shared.bool(key: "pause", defaultValue: false)
+            Store.shared.bool(key: "pause", defaultValue: false)
         }
         set {
             Store.shared.set(key: "pause", value: newValue)
         }
     }
     
-    public init(popup: Popup_p? = nil, settings: Settings_v? = nil) {
+    public init(popup: Popup_p? = nil, settings: Settings_v? = nil, portal: Portal_p? = nil) {
+        self.portal = portal
         self.config = module_c(in: Bundle(for: type(of: self)).path(forResource: "config", ofType: "plist")!)
         
         self.log = NextLog.shared.copy(category: self.config.name)

@@ -19,43 +19,62 @@ class ApplicationSettings: NSStackView {
     
     private var temperatureUnitsValue: String {
         get {
-            return Store.shared.string(key: "temperature_units", defaultValue: "system")
+            Store.shared.string(key: "temperature_units", defaultValue: "system")
         }
         set {
             Store.shared.set(key: "temperature_units", value: newValue)
         }
     }
     
-    private var pauseState: Bool {
+    private var combinedModulesState: Bool {
         get {
-            return Store.shared.bool(key: "pause", defaultValue: false)
+            Store.shared.bool(key: "CombinedModules", defaultValue: false)
         }
         set {
-            Store.shared.set(key: "pause", value: newValue)
+            Store.shared.set(key: "CombinedModules", value: newValue)
+        }
+    }
+    private var combinedModulesSpacing: String {
+        get {
+            Store.shared.string(key: "CombinedModules_spacing", defaultValue: "none")
+        }
+        set {
+            Store.shared.set(key: "CombinedModules_spacing", value: newValue)
         }
     }
     
     private let updateWindow: UpdateWindow = UpdateWindow()
+    private let moduleSelector: ModuleSelectorView = ModuleSelectorView()
     private var updateSelector: NSPopUpButton?
     private var startAtLoginBtn: NSButton?
-    private var pauseButton: NSButton?
     private var uninstallHelperButton: NSButton?
     private var buttonsContainer: NSStackView?
+    
+    private var combinedModules: NSView?
+    private var combinedModulesSeparator: NSView?
     
     init() {
         super.init(frame: NSRect(x: 0, y: 0, width: Constants.Settings.width, height: Constants.Settings.height))
         
-        self.orientation = .vertical
-        self.distribution = .fill
-        self.spacing = 0
+        self.translatesAutoresizingMaskIntoConstraints = false
         
-        self.addArrangedSubview(self.informationView())
-        self.addArrangedSubview(self.separatorView())
-        self.addArrangedSubview(self.settingsView())
-        self.addArrangedSubview(self.separatorView())
-        self.addArrangedSubview(self.buttonsView())
+        let scrollView = ScrollableStackView()
+        scrollView.stackView.spacing = 0
         
-        NotificationCenter.default.addObserver(self, selector: #selector(listenForPause), name: .pause, object: nil)
+        scrollView.stackView.addArrangedSubview(self.informationView())
+        scrollView.stackView.addArrangedSubview(self.separatorView())
+        scrollView.stackView.addArrangedSubview(self.settingsView())
+        scrollView.stackView.addArrangedSubview(self.separatorView())
+        scrollView.stackView.addArrangedSubview(self.combinedModulesView())
+        let separator = self.separatorView()
+        self.combinedModulesSeparator = separator
+        scrollView.stackView.addArrangedSubview(separator)
+        scrollView.stackView.addArrangedSubview(self.buttonsView())
+        
+        self.toggleCombinedModulesView()
+        
+        self.addArrangedSubview(scrollView)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(toggleUninstallHelperButton), name: .fanHelperState, object: nil)
     }
     
@@ -64,7 +83,6 @@ class ApplicationSettings: NSStackView {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .pause, object: nil)
         NotificationCenter.default.removeObserver(self, name: .fanHelperState, object: nil)
     }
     
@@ -135,7 +153,17 @@ class ApplicationSettings: NSStackView {
     }
     
     private func settingsView() -> NSView {
-        let view: NSView = NSView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: 0))
+        let view: NSStackView = NSStackView()
+        view.orientation = .vertical
+        view.edgeInsets = NSEdgeInsets(
+            top: Constants.Settings.margin,
+            left: Constants.Settings.margin,
+            bottom: Constants.Settings.margin,
+            right: Constants.Settings.margin
+        )
+        view.spacing = 10
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.widthAnchor.constraint(equalToConstant: self.frame.width - 15).isActive = true
         
         let grid: NSGridView = NSGridView(frame: NSRect(x: 0, y: 0, width: view.frame.width, height: 0))
         grid.rowSpacing = 10
@@ -143,7 +171,6 @@ class ApplicationSettings: NSStackView {
         grid.xPlacement = .trailing
         grid.rowAlignment = .firstBaseline
         grid.translatesAutoresizingMaskIntoConstraints = false
-        
         grid.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         grid.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
@@ -175,37 +202,71 @@ class ApplicationSettings: NSStackView {
             text: localizedString("Start at login")
         )
         grid.addRow(with: [NSGridCell.emptyContentView, self.startAtLoginBtn!])
+        grid.addRow(with: [NSGridCell.emptyContentView, self.toggleView(
+            action: #selector(self.toggleCombinedModules),
+            state: self.combinedModulesState,
+            text: localizedString("Combined modules")
+        )])
         
-        view.addSubview(grid)
-        
-        NSLayoutConstraint.activate([
-            grid.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            grid.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+        view.addArrangedSubview(grid)
         
         return view
     }
     
-    private func buttonsView() -> NSView {
-        let view = NSStackView()
+    private func combinedModulesView() -> NSView {
+        let view: NSStackView = NSStackView()
         view.orientation = .vertical
-        view.alignment = .centerY
-        view.distribution = .fill
+        view.edgeInsets = NSEdgeInsets(
+            top: Constants.Settings.margin,
+            left: Constants.Settings.margin,
+            bottom: Constants.Settings.margin,
+            right: Constants.Settings.margin
+        )
+        view.spacing = 10
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.widthAnchor.constraint(equalToConstant: self.frame.width - 15).isActive = true
+        
+        let grid: NSGridView = NSGridView(frame: NSRect(x: 0, y: 0, width: view.frame.width, height: 0))
+        grid.rowSpacing = 10
+        grid.columnSpacing = 20
+        grid.xPlacement = .trailing
+        grid.rowAlignment = .firstBaseline
+        grid.translatesAutoresizingMaskIntoConstraints = false
+        grid.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        grid.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        
+        grid.addRow(with: [
+            self.titleView(localizedString("Spacing")),
+            selectView(
+                action: #selector(self.toggleCombinedModulesSpacing),
+                items: CombinedModulesSpacings,
+                selected: self.combinedModulesSpacing
+            )
+        ])
+        
+        view.addArrangedSubview(self.moduleSelector)
+        view.addArrangedSubview(grid)
+        
+        self.combinedModules = view
+        return view
+    }
+    
+    private func buttonsView() -> NSView {
+        let view: NSView = NSView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: 60))
         view.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        self.buttonsContainer = view
+        
+        let row = NSStackView()
+        row.translatesAutoresizingMaskIntoConstraints = false
+        row.orientation = .vertical
+        row.alignment = .centerY
+        row.distribution = .fill
+        self.buttonsContainer = row
         
         let reset: NSButton = NSButton()
         reset.title = localizedString("Reset settings")
         reset.bezelStyle = .rounded
         reset.target = self
         reset.action = #selector(self.resetSettings)
-        
-        let pause: NSButton = NSButton()
-        pause.title = localizedString(self.pauseState ? "Resume the Stats" : "Pause the Stats")
-        pause.bezelStyle = .rounded
-        pause.target = self
-        pause.action = #selector(self.togglePause)
-        self.pauseButton = pause
         
         let uninstall: NSButton = NSButton()
         uninstall.title = localizedString("Uninstall fan helper")
@@ -214,11 +275,17 @@ class ApplicationSettings: NSStackView {
         uninstall.action = #selector(self.uninstallHelper)
         self.uninstallHelperButton = uninstall
         
-        view.addArrangedSubview(reset)
-        view.addArrangedSubview(pause)
+        row.addArrangedSubview(reset)
         if SMCHelper.shared.isInstalled {
-            view.addArrangedSubview(uninstall)
+            row.addArrangedSubview(uninstall)
         }
+        
+        view.addSubview(row)
+        
+        NSLayoutConstraint.activate([
+            row.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            row.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
         
         return view
     }
@@ -253,9 +320,14 @@ class ApplicationSettings: NSStackView {
         return button
     }
     
+    private func toggleCombinedModulesView() {
+        self.combinedModules?.isHidden = !self.combinedModulesState
+        self.combinedModulesSeparator?.isHidden = !self.combinedModulesState
+    }
+    
     // MARK: - actions
     
-    @objc func updateAction(_ sender: NSObject) {
+    @objc private func updateAction(_ sender: NSObject) {
         updater.check(force: true, completion: { result, error in
             if error != nil {
                 debug("error updater.check(): \(error!.localizedDescription)")
@@ -268,28 +340,23 @@ class ApplicationSettings: NSStackView {
             }
             
             DispatchQueue.main.async(execute: {
-                self.updateWindow.open(version)
+                self.updateWindow.open(version, settingButton: true)
                 return
             })
         })
     }
     
     @objc private func toggleUpdateInterval(_ sender: NSMenuItem) {
-        guard let key = sender.representedObject as? String else {
-            return
-        }
-        
+        guard let key = sender.representedObject as? String else { return }
         Store.shared.set(key: "update-interval", value: key)
     }
     
     @objc private func toggleTemperatureUnits(_ sender: NSMenuItem) {
-        guard let key = sender.representedObject as? String else {
-            return
-        }
+        guard let key = sender.representedObject as? String else { return }
         self.temperatureUnitsValue = key
     }
     
-    @objc func toggleDock(_ sender: NSButton) {
+    @objc private func toggleDock(_ sender: NSButton) {
         let state = sender.state
         
         Store.shared.set(key: "dockIcon", value: state == NSControl.StateValue.on)
@@ -300,14 +367,14 @@ class ApplicationSettings: NSStackView {
         }
     }
     
-    @objc func toggleLaunchAtLogin(_ sender: NSButton) {
+    @objc private func toggleLaunchAtLogin(_ sender: NSButton) {
         LaunchAtLogin.isEnabled = sender.state == NSControl.StateValue.on
         if !Store.shared.exist(key: "runAtLoginInitialized") {
             Store.shared.set(key: "runAtLoginInitialized", value: true)
         }
     }
     
-    @objc func resetSettings(_ sender: NSObject) {
+    @objc private func resetSettings(_ sender: NSObject) {
         let alert = NSAlert()
         alert.messageText = localizedString("Reset settings")
         alert.informativeText = localizedString("Reset settings text")
@@ -324,16 +391,6 @@ class ApplicationSettings: NSStackView {
         }
     }
     
-    @objc func togglePause(_ sender: NSButton) {
-        self.pauseState = !self.pauseState
-        self.pauseButton?.title = localizedString(self.pauseState ? "Resume the Stats" : "Pause the Stats")
-        NotificationCenter.default.post(name: .pause, object: nil, userInfo: ["state": self.pauseState])
-    }
-    
-    @objc func listenForPause() {
-        self.pauseButton?.title = localizedString(self.pauseState ? "Resume the Stats" : "Pause the Stats")
-    }
-    
     @objc private func toggleUninstallHelperButton(_ notification: Notification) {
         guard let state = notification.userInfo?["state"] as? Bool, let v = self.uninstallHelperButton else {
             return
@@ -347,5 +404,195 @@ class ApplicationSettings: NSStackView {
     
     @objc private func uninstallHelper() {
         SMCHelper.shared.uninstall()
+    }
+    
+    @objc private func toggleCombinedModules(_ sender: NSButton) {
+        self.combinedModulesState = sender.state == NSControl.StateValue.on
+        self.toggleCombinedModulesView()
+        NotificationCenter.default.post(name: .toggleOneView, object: nil, userInfo: nil)
+    }
+    
+    @objc private func toggleCombinedModulesSpacing(_ sender: NSMenuItem) {
+        guard let key = sender.representedObject as? String else { return }
+        self.combinedModulesSpacing = key
+        NotificationCenter.default.post(name: .moduleRearrange, object: nil, userInfo: nil)
+    }
+}
+
+private class ModuleSelectorView: NSStackView {
+    init() {
+        super.init(frame: NSRect(x: 0, y: 0, width: 0, height: Constants.Widget.height + (Constants.Settings.margin*2)))
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.edgeInsets = NSEdgeInsets(
+            top: Constants.Settings.margin,
+            left: Constants.Settings.margin,
+            bottom: Constants.Settings.margin,
+            right: Constants.Settings.margin
+        )
+        self.spacing = Constants.Settings.margin
+        
+        let background: NSVisualEffectView = {
+            let view = NSVisualEffectView(frame: NSRect.zero)
+            view.blendingMode = .withinWindow
+            view.material = .contentBackground
+            view.state = .active
+            view.wantsLayer = true
+            view.layer?.cornerRadius = 5
+            return view
+        }()
+        
+        var w = self.spacing
+        modules.filter({ $0.available }).sorted(by: { $0.combinedPosition < $1.combinedPosition }).forEach { (m: Module) in
+            let v = ModulePreview(id: m.name, icon: m.config.icon)
+            self.addArrangedSubview(v)
+            w += v.frame.width + self.spacing
+        }
+        
+        self.addSubview(background, positioned: .below, relativeTo: .none)
+        
+        self.setFrameSize(NSSize(width: w, height: self.frame.height))
+        background.setFrameSize(NSSize(width: w, height: self.frame.height))
+        
+        self.widthAnchor.constraint(equalToConstant: w).isActive = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func mouseDown(with event: NSEvent) {
+        let location = convert(event.locationInWindow, from: nil)
+        guard let targetIdx = self.views.firstIndex(where: { $0.hitTest(location) != nil }),
+              let window = self.window, self.views[targetIdx].identifier != nil else {
+            super.mouseDragged(with: event)
+            return
+        }
+        
+        let view = self.views[targetIdx]
+        let copy = ViewCopy(view)
+        copy.zPosition = 2
+        copy.transform = CATransform3DMakeScale(0.9, 0.9, 1)
+        
+        // hide the original view, show the copy
+        view.subviews.forEach({ $0.isHidden = true })
+        self.layer?.addSublayer(copy)
+        
+        // hide the copy view, show the original
+        defer {
+            copy.removeFromSuperlayer()
+            view.subviews.forEach({ $0.isHidden = false })
+        }
+        
+        var newIdx = -1
+        let originCenter = view.frame.midX
+        let originX = view.frame.origin.x
+        let p0 = convert(event.locationInWindow, from: nil).x
+        
+        window.trackEvents(matching: [.leftMouseDragged, .leftMouseUp], timeout: 1e6, mode: .eventTracking) { event, stop in
+            guard let event = event else {
+                stop.pointee = true
+                return
+            }
+            
+            if event.type == .leftMouseDragged {
+                let p1 = self.convert(event.locationInWindow, from: nil).x
+                let diff = p1 - p0
+                
+                CATransaction.begin()
+                CATransaction.setDisableActions(true)
+                copy.frame.origin.x = originX + diff
+                CATransaction.commit()
+                
+                let reordered = self.views.map{
+                    (view: $0, x: $0 !== view ? $0.frame.midX : originCenter + diff)
+                }.sorted{ $0.x < $1.x }.map { $0.view }
+                
+                guard let nextIndex = reordered.firstIndex(of: view),
+                      let prevIndex = self.views.firstIndex(of: view) else {
+                    stop.pointee = true
+                    return
+                }
+                
+                if nextIndex != prevIndex {
+                    newIdx = nextIndex
+                    view.removeFromSuperviewWithoutNeedingDisplay()
+                    self.insertArrangedSubview(view, at: newIdx)
+                    self.layoutSubtreeIfNeeded()
+                    
+                    for (i, v) in self.views(in: .leading).compactMap({$0 as? ModulePreview}).enumerated() {
+                        if let m = modules.first(where: { $0.name == v.identifier?.rawValue }) {
+                            m.combinedPosition = i
+                        }
+                    }
+                }
+            } else {
+                if newIdx != -1, let view = self.views[newIdx] as? ModulePreview, let id = view.identifier?.rawValue {
+                    NotificationCenter.default.post(name: .moduleRearrange, object: nil, userInfo: ["id": id])
+                }
+                view.mouseUp(with: event)
+                stop.pointee = true
+            }
+        }
+    }
+}
+
+internal class ModulePreview: NSStackView {
+    private let id: String
+    private let imageView: NSImageView
+    
+    public init(id: String, icon: NSImage?) {
+        self.id = id
+        self.imageView = NSImageView(frame: NSRect(origin: .zero, size: NSSize(width: Constants.Widget.height, height: Constants.Widget.height)))
+        
+        let size: CGSize = CGSize(width: Constants.Widget.height + (Constants.Widget.spacing * 2), height: Constants.Widget.height)
+        super.init(frame: NSRect(x: 0, y: 0, width: size.width, height: size.height))
+        
+        self.wantsLayer = true
+        self.layer?.cornerRadius = 2
+        self.layer?.borderColor = NSColor(hexString: "#dddddd").cgColor
+        self.layer?.borderWidth = 1
+        self.layer?.backgroundColor = NSColor.white.cgColor
+        
+        self.identifier = NSUserInterfaceItemIdentifier(rawValue: id)
+        self.toolTip = localizedString("Move module", id)
+        
+        self.orientation = .vertical
+        self.distribution = .fill
+        self.alignment = .centerY
+        self.spacing = 0
+        
+        self.imageView.image = icon
+        self.imageView.contentTintColor = self.isDarkMode ? .textBackgroundColor : .textColor
+        
+        self.addArrangedSubview(self.imageView)
+        
+        self.addTrackingArea(NSTrackingArea(
+            rect: NSRect(x: 0, y: 0, width: size.width, height: size.height),
+            options: [NSTrackingArea.Options.activeAlways, NSTrackingArea.Options.mouseEnteredAndExited, NSTrackingArea.Options.activeInActiveApp],
+            owner: self,
+            userInfo: nil
+        ))
+        
+        NSLayoutConstraint.activate([
+            self.widthAnchor.constraint(equalToConstant: size.width),
+            self.heightAnchor.constraint(equalToConstant: size.height)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func updateLayer() {
+        self.imageView.contentTintColor = self.isDarkMode ? .textBackgroundColor : .textColor
+    }
+    
+    override func mouseEntered(with: NSEvent) {
+        NSCursor.pointingHand.set()
+    }
+    
+    override func mouseExited(with: NSEvent) {
+        NSCursor.arrow.set()
     }
 }

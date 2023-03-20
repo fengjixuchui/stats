@@ -121,6 +121,8 @@
 "Reset settings" = "Зануляване на настройките";
 "Pause the Stats" = "Паузиране на Stats";
 "Resume the Stats" = "Продължаване на Stats";
+"Combined modules" = "Combined modules";
+"Spacing" = "Spacing";
 
 // Dashboard
 "Serial number" = "Сериен номер";
@@ -214,6 +216,8 @@
 "User color" = "Потребителски цвят";
 "Idle color" = "Цвят при неактивност";
 "Cluster grouping" = "Cluster grouping";
+"Efficiency cores color" = "Efficiency cores color";
+"Performance cores color" = "Performance cores color";
 
 // GPU
 "GPU to show" = "Показване на графична карта";

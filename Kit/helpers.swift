@@ -230,7 +230,7 @@ public struct DiskSize {
 }
 
 public class LabelField: NSTextField {
-    public init(frame: NSRect, _ label: String = "") {
+    public init(frame: NSRect = NSRect(), _ label: String = "") {
         super.init(frame: frame)
         
         self.isEditable = false
@@ -531,7 +531,6 @@ public func isNewestVersion(currentVersion: String, latestVersion: String) -> Bo
     return false
 }
 
-@available(macOS 10.14, *)
 public func showNotification(title: String, subtitle: String? = nil, userInfo: [AnyHashable: Any] = [:], delegate: UNUserNotificationCenterDelegate? = nil) -> String {
     let id = UUID().uuidString
     
@@ -557,33 +556,9 @@ public func showNotification(title: String, subtitle: String? = nil, userInfo: [
     return id
 }
 
-@available(macOS 10.14, *)
 public func removeNotification(_ id: String) {
     let center = UNUserNotificationCenter.current()
     center.removeDeliveredNotifications(withIdentifiers: [id])
-}
-
-public func showNSNotification(title: String, subtitle: String? = nil, body: String? = nil, userInfo: [AnyHashable: Any] = [:]) -> String {
-    let notification = NSUserNotification()
-    let id = UUID().uuidString
-    
-    notification.identifier = id
-    notification.title = title
-    notification.subtitle = subtitle
-    notification.informativeText = body
-    notification.soundName = NSUserNotificationDefaultSoundName
-    notification.hasActionButton = false
-    
-    NSUserNotificationCenter.default.deliver(notification)
-    
-    return id
-}
-
-public func removeNSNotification(_ id: String) {
-    let notificationCenter = NSUserNotificationCenter.default
-    if let notification = notificationCenter.deliveredNotifications.first(where: { $0.identifier == id }) {
-        notificationCenter.removeScheduledNotification(notification)
-    }
 }
 
 public struct TopProcess {
@@ -695,7 +670,7 @@ public class ColorView: NSView {
     private var color: NSColor
     private var state: Bool
     
-    public init(frame: NSRect, color: NSColor, state: Bool = false, radius: CGFloat = 2) {
+    public init(frame: NSRect = NSRect.zero, color: NSColor, state: Bool = false, radius: CGFloat = 2) {
         self.color = color
         self.state = state
         
@@ -754,10 +729,13 @@ public extension UnitTemperature {
 }
 
 // swiftlint:disable identifier_name
-public func Temperature(_ value: Double, defaultUnit: UnitTemperature = UnitTemperature.celsius) -> String {
+public func Temperature(_ value: Double, defaultUnit: UnitTemperature = UnitTemperature.celsius, fractionDigits: Int = 0) -> String {
     let formatter = MeasurementFormatter()
     formatter.locale = Locale.init(identifier: "en_US")
-    formatter.numberFormatter.maximumFractionDigits = 0
+    formatter.numberFormatter.maximumFractionDigits = fractionDigits
+    if fractionDigits != 0 {
+        formatter.numberFormatter.minimumFractionDigits = fractionDigits
+    }
     formatter.unitOptions = .providedUnit
     
     var measurement = Measurement(value: value, unit: defaultUnit)
@@ -781,17 +759,24 @@ public class ProcessView: NSStackView {
     private var pid: Int? = nil
     private var lock: Bool = false
     
-    private var imageView: NSImageView = NSImageView(frame: NSRect(x: 5, y: 5, width: 12, height: 12))
-    private var killView: NSButton = NSButton(frame: NSRect(x: 5, y: 5, width: 12, height: 12))
+    private var imageView: NSImageView = NSImageView()
+    private var killView: NSButton = NSButton()
     private var labelView: LabelField = {
-        let view = LabelField(frame: NSRect(x: 0, y: 0, width: 0, height: 0))
+        let view = LabelField()
         view.cell?.truncatesLastVisibleLine = true
         return view
     }()
     private var valueView: ValueField = ValueField(frame: NSRect(x: 0, y: 0, width: 0, height: 0))
     
-    public init() {
-        super.init(frame: NSRect(x: 0, y: 0, width: 264, height: 22))
+    public init(size: CGSize = CGSize(width: 264, height: 22)) {
+        var rect = NSRect(x: 5, y: 5, width: 12, height: 12)
+        if size.height != 22 {
+            rect = NSRect(x: 3, y: 3, width: 12, height: 12)
+        }
+        self.imageView = NSImageView(frame: rect)
+        self.killView = NSButton(frame: rect)
+        
+        super.init(frame: NSRect(x: 0, y: 0, width: size.width, height: size.height))
         
         self.wantsLayer = true
         self.orientation = .horizontal
@@ -800,15 +785,13 @@ public class ProcessView: NSStackView {
         self.layer?.cornerRadius = 3
         
         let imageBox: NSView = {
-            let view = NSView(frame: NSRect(x: 0, y: 0, width: 0, height: 0))
+            let view = NSView()
             
             self.killView.bezelStyle = .regularSquare
             self.killView.translatesAutoresizingMaskIntoConstraints = false
             self.killView.imageScaling = .scaleNone
             self.killView.image = Bundle(for: type(of: self)).image(forResource: "cancel")!
-            if #available(OSX 10.14, *) {
-                self.killView.contentTintColor = .lightGray
-            }
+            self.killView.contentTintColor = .lightGray
             self.killView.isBordered = false
             self.killView.action = #selector(self.kill)
             self.killView.target = self
@@ -1084,18 +1067,23 @@ public class SMCHelper {
         return self.connection != nil
     }
     
-    private func helperStatus(completion: @escaping (_ installed: Bool) -> Void) {
+    public func checkForUpdate() {
         let helperURL = Bundle.main.bundleURL.appendingPathComponent("Contents/Library/LaunchServices/eu.exelban.Stats.SMC.Helper")
-        guard
-            let helperBundleInfo = CFBundleCopyInfoDictionaryForURL(helperURL as CFURL) as? [String: Any],
-            let helperVersion = helperBundleInfo["CFBundleShortVersionString"] as? String,
-            let helper = self.helper(completion) else {
-                completion(false)
-                return
-        }
+        guard let helperBundleInfo = CFBundleCopyInfoDictionaryForURL(helperURL as CFURL) as? [String: Any],
+              let helperVersion = helperBundleInfo["CFBundleShortVersionString"] as? String,
+              let helper = self.helper(nil) else { return }
         
         helper.version { installedHelperVersion in
-            completion(installedHelperVersion == helperVersion)
+            guard installedHelperVersion != helperVersion else { return }
+            print("new version of SMC helper is detected, going to update...")
+            self.uninstall(silent: true)
+            self.install { installed in
+                if installed {
+                    print("the new version of SMC helper was successfully installed")
+                } else {
+                    print("error when installing a new version of the SMC helper")
+                }
+            }
         }
     }
     
@@ -1175,10 +1163,17 @@ public class SMCHelper {
         return helper
     }
     
-    public func uninstall() {
+    public func uninstall(silent: Bool = false) {
+        if let count = SMC.shared.getValue("FNum") {
+            for i in 0..<Int(count) {
+                self.setFanMode(i, mode: 0)
+            }
+        }
         guard let helper = self.helper(nil) else { return }
         helper.uninstall()
-        NotificationCenter.default.post(name: .fanHelperState, object: nil, userInfo: ["state": false])
+        if !silent {
+            NotificationCenter.default.post(name: .fanHelperState, object: nil, userInfo: ["state": false])
+        }
     }
 }
 
@@ -1197,8 +1192,8 @@ internal func grayscaleImage(_ image: NSImage) -> NSImage? {
     return greyImage
 }
 
-internal class ViewCopy: CALayer {
-    init(_ view: NSView) {
+public class ViewCopy: CALayer {
+    public init(_ view: NSView) {
         super.init()
         
         guard let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds) else { return }
@@ -1367,4 +1362,24 @@ public func controlState(_ sender: NSControl) -> Bool {
     }
     
     return state == .on
+}
+
+@available(macOS 11.0, *)
+public func iconFromSymbol(name: String, scale: NSImage.SymbolScale) -> NSImage? {
+    let config = NSImage.SymbolConfiguration(textStyle: .body, scale: scale)
+    if let symbol = NSImage(systemSymbolName: name, accessibilityDescription: nil) {
+        return symbol.withSymbolConfiguration(config)
+    }
+    return nil
+}
+
+public func showAlert(_ message: String, _ information: String? = nil, _ style: NSAlert.Style = .informational) {
+    let alert = NSAlert()
+    alert.messageText = message
+    if let information = information {
+        alert.informativeText = information
+    }
+    alert.addButton(withTitle: "OK")
+    alert.alertStyle = style
+    alert.runModal()
 }

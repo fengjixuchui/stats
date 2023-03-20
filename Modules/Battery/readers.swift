@@ -69,8 +69,10 @@ internal class UsageReader: Reader<Battery_Usage> {
         for ps in psList {
             if let list = IOPSGetPowerSourceDescription(psInfo, ps).takeUnretainedValue() as? [String: Any] {
                 self.usage.powerSource = list[kIOPSPowerSourceStateKey] as? String ?? "AC Power"
+                self.usage.isBatteryPowered = self.usage.powerSource == "Battery Power"
                 self.usage.isCharged = list[kIOPSIsChargedKey] as? Bool ?? false
                 self.usage.isCharging = self.getBoolValue("IsCharging" as CFString) ?? false
+                self.usage.optimizedChargingEngaged = list["Optimized Battery Charging Engaged"] as? Int == 1
                 if #available(macOS 12.0, *) {
                     self.usage.isLowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
                 }

@@ -16,12 +16,10 @@ class UpdateWindow: NSWindow, NSWindowDelegate {
     private let viewController: UpdateViewController = UpdateViewController()
     
     init() {
-        let w = NSScreen.main!.frame.width
-        let h = NSScreen.main!.frame.height
         super.init(
             contentRect: NSRect(
-                x: w - self.viewController.view.frame.width,
-                y: h - self.viewController.view.frame.height,
+                x: NSScreen.main!.frame.width - self.viewController.view.frame.width,
+                y: NSScreen.main!.frame.height - self.viewController.view.frame.height,
                 width: self.viewController.view.frame.width,
                 height: self.viewController.view.frame.height
             ),
@@ -33,7 +31,7 @@ class UpdateWindow: NSWindow, NSWindowDelegate {
         self.title = "Stats"
         self.contentViewController = self.viewController
         self.titlebarAppearsTransparent = true
-        self.center()
+        self.positionCenter()
         self.setIsVisible(false)
         
         let windowController = NSWindowController()
@@ -41,12 +39,19 @@ class UpdateWindow: NSWindow, NSWindowDelegate {
         windowController.loadWindow()
     }
     
-    public func open(_ v: version_s) {
-        if !self.isVisible {
+    public func open(_ v: version_s, settingButton: Bool = false) {
+        if !self.isVisible || settingButton {
             self.setIsVisible(true)
             self.makeKeyAndOrderFront(nil)
         }
         self.viewController.open(v)
+    }
+    
+    private func positionCenter() {
+        self.setFrameOrigin(NSPoint(
+            x: (NSScreen.main!.frame.width - self.viewController.view.frame.width)/2,
+            y: (NSScreen.main!.frame.height - self.viewController.view.frame.height)/2
+        ))
     }
 }
 
@@ -279,6 +284,10 @@ private class UpdateView: NSView {
     }
     
     @objc private func install(_ sender: Any) {
-        updater.install(path: self.path)
+        updater.install(path: self.path) { error in
+            if let error {
+                showAlert("Error update Stats", error, .critical)
+            }
+        }
     }
 }

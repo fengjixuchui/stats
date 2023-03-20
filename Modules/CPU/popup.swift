@@ -18,7 +18,7 @@ internal class Popup: NSView, Popup_p {
     private var grid: NSGridView? = nil
     
     private let dashboardHeight: CGFloat = 90
-    private let chartHeight: CGFloat = 90 + Constants.Popup.separatorHeight
+    private let chartHeight: CGFloat = 120 + Constants.Popup.separatorHeight
     private var detailsHeight: CGFloat {
         get {
             var count: CGFloat = 5
@@ -51,8 +51,11 @@ internal class Popup: NSView, Popup_p {
     private var systemColorView: NSView? = nil
     private var userColorView: NSView? = nil
     private var idleColorView: NSView? = nil
+    private var eCoresColorView: NSView? = nil
+    private var pCoresColorView: NSView? = nil
     
-    private var chart: LineChartView? = nil
+    private var lineChart: LineChartView? = nil
+    private var barChart: BarChartView? = nil
     private var circle: PieChartView? = nil
     private var temperatureCircle: HalfCircleGraphView? = nil
     private var frequencyCircle: HalfCircleGraphView? = nil
@@ -98,6 +101,22 @@ internal class Popup: NSView, Popup_p {
         }
         return value
     }
+    private var eCoresColorState: Color = .teal
+    private var eCoresColor: NSColor {
+        var value = NSColor.systemTeal
+        if let color = self.eCoresColorState.additional as? NSColor {
+            value = color
+        }
+        return value
+    }
+    private var pCoresColorState: Color = .secondBlue
+    private var pCoresColor: NSColor {
+        var value = NSColor.systemBlue
+        if let color = self.pCoresColorState.additional as? NSColor {
+            value = color
+        }
+        return value
+    }
     
     public var sizeCallback: ((NSSize) -> Void)? = nil
     
@@ -128,6 +147,8 @@ internal class Popup: NSView, Popup_p {
         self.userColorState = Color.fromString(Store.shared.string(key: "\(self.title)_userColor", defaultValue: self.userColorState.key))
         self.idleColorState = Color.fromString(Store.shared.string(key: "\(self.title)_idleColor", defaultValue: self.idleColorState.key))
         self.chartColorState = Color.fromString(Store.shared.string(key: "\(self.title)_chartColor", defaultValue: self.chartColorState.key))
+        self.eCoresColorState = Color.fromString(Store.shared.string(key: "\(self.title)_eCoresColor", defaultValue: self.eCoresColorState.key))
+        self.pCoresColorState = Color.fromString(Store.shared.string(key: "\(self.title)_pCoresColor", defaultValue: self.pCoresColorState.key))
         
         let gridView: NSGridView = NSGridView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
         gridView.rowSpacing = 0
@@ -153,7 +174,7 @@ internal class Popup: NSView, Popup_p {
     }
     
     public override func updateLayer() {
-        self.chart?.display()
+        self.lineChart?.display()
     }
     
     public func numberOfProcessesUpdated() {
@@ -209,19 +230,58 @@ internal class Popup: NSView, Popup_p {
     }
     
     private func initChart() -> NSView {
-        let view: NSView = NSView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: self.chartHeight))
-        let separator = separatorView(localizedString("Usage history"), origin: NSPoint(x: 0, y: self.chartHeight-Constants.Popup.separatorHeight), width: self.frame.width)
-        let container: NSView = NSView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: separator.frame.origin.y))
-        container.wantsLayer = true
-        container.layer?.backgroundColor = NSColor.lightGray.withAlphaComponent(0.1).cgColor
-        container.layer?.cornerRadius = 3
+        let view: NSStackView = NSStackView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: self.chartHeight))
+        view.orientation = .vertical
+        view.spacing = 0
         
-        self.chart = LineChartView(frame: NSRect(x: 1, y: 0, width: view.frame.width, height: container.frame.height), num: 120)
-        self.chart?.color = self.chartColor
-        container.addSubview(self.chart!)
+        let separator = separatorView(localizedString("Usage history"), origin: NSPoint(x: 0, y: 0), width: self.frame.width)
         
-        view.addSubview(separator)
-        view.addSubview(container)
+        let lineChartContainer: NSView = {
+            let box: NSView = NSView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: 70))
+            box.heightAnchor.constraint(equalToConstant: box.frame.height).isActive = true
+            box.wantsLayer = true
+            box.layer?.backgroundColor = NSColor.lightGray.withAlphaComponent(0.1).cgColor
+            box.layer?.cornerRadius = 3
+            
+            let chart = LineChartView(frame: NSRect(
+                x: Constants.Popup.spacing,
+                y: Constants.Popup.spacing,
+                width: view.frame.width - (Constants.Popup.spacing*2),
+                height: box.frame.height - (Constants.Popup.spacing*2)
+            ), num: 120)
+            chart.color = self.chartColor
+            self.lineChart = chart
+            
+            box.addSubview(chart)
+            
+            return box
+        }()
+        
+        view.addArrangedSubview(separator)
+        view.addArrangedSubview(lineChartContainer)
+        
+        if let cores = SystemKit.shared.device.info.cpu?.logicalCores {
+            let barChartContainer: NSView = {
+                let box: NSView = NSView(frame: NSRect(x: 0, y: 0, width: self.frame.width, height: 50))
+                box.heightAnchor.constraint(equalToConstant: box.frame.height).isActive = true
+                box.wantsLayer = true
+                box.layer?.backgroundColor = NSColor.lightGray.withAlphaComponent(0.1).cgColor
+                box.layer?.cornerRadius = 3
+                
+                let chart = BarChartView(frame: NSRect(
+                    x: Constants.Popup.spacing,
+                    y: Constants.Popup.spacing,
+                    width: view.frame.width - (Constants.Popup.spacing*2),
+                    height: box.frame.height - (Constants.Popup.spacing*2)
+                ), num: Int(cores))
+                self.barChart = chart
+                
+                box.addSubview(chart)
+                
+                return box
+            }()
+            view.addArrangedSubview(barChartContainer)
+        }
         
         return view
     }
@@ -245,10 +305,10 @@ internal class Popup: NSView, Popup_p {
         }
         
         if SystemKit.shared.device.info.cpu?.eCores != nil {
-            self.eCoresField = popupRow(container, n: 0, title: "\(localizedString("Efficiency cores")):", value: "").1
+            (self.eCoresColorView, self.eCoresField) = popupWithColorRow(container, color: self.eCoresColor, n: 0, title: "\(localizedString("Efficiency cores")):", value: "")
         }
         if SystemKit.shared.device.info.cpu?.pCores != nil {
-            self.pCoresField = popupRow(container, n: 0, title: "\(localizedString("Performance cores")):", value: "").1
+            (self.pCoresColorView, self.pCoresField) = popupWithColorRow(container, color: self.pCoresColor, n: 0, title: "\(localizedString("Performance cores")):", value: "")
         }
         
         view.addSubview(separator)
@@ -312,9 +372,21 @@ internal class Popup: NSView, Popup_p {
                     field.stringValue = "\(Int(usage * 100))%"
                 }
                 
+                var usagePerCore: [ColorValue] = []
+                if let cores = SystemKit.shared.device.info.cpu?.cores, cores.count == value.usagePerCore.count {
+                    for i in 0..<value.usagePerCore.count {
+                        usagePerCore.append(ColorValue(value.usagePerCore[i], color: cores[i].type == .efficiency ? self.eCoresColor : self.pCoresColor))
+                    }
+                } else {
+                    for i in 0..<value.usagePerCore.count {
+                        usagePerCore.append(ColorValue(value.usagePerCore[i], color: NSColor.systemBlue))
+                    }
+                }
+                self.barChart?.setValues(usagePerCore)
+                
                 self.initialized = true
             }
-            self.chart?.addValue(value.totalUsage)
+            self.lineChart?.addValue(value.totalUsage)
         })
     }
     
@@ -446,34 +518,41 @@ internal class Popup: NSView, Popup_p {
             selected: self.chartColorState.key
         ))
         
+        view.addArrangedSubview(selectSettingsRow(
+            title: localizedString("Efficiency cores color"),
+            action: #selector(toggleeCoresColor),
+            items: Color.allColors,
+            selected: self.eCoresColorState.key
+        ))
+        
+        view.addArrangedSubview(selectSettingsRow(
+            title: localizedString("Performance cores color"),
+            action: #selector(togglepCoresColor),
+            items: Color.allColors,
+            selected: self.pCoresColorState.key
+        ))
+        
         return view
     }
     
     @objc private func toggleSystemColor(_ sender: NSMenuItem) {
-        guard let key = sender.representedObject as? String,
-              let newValue = Color.allColors.first(where: { $0.key == key }) else {
+        guard let key = sender.representedObject as? String, let newValue = Color.allColors.first(where: { $0.key == key }) else {
             return
         }
         self.systemColorState = newValue
         Store.shared.set(key: "\(self.title)_systemColor", value: key)
-        if let color = newValue.additional as? NSColor {
-            self.systemColorView?.layer?.backgroundColor = color.cgColor
-        }
+        self.systemColorView?.layer?.backgroundColor = (newValue.additional as? NSColor)?.cgColor
     }
     @objc private func toggleUserColor(_ sender: NSMenuItem) {
-        guard let key = sender.representedObject as? String,
-              let newValue = Color.allColors.first(where: { $0.key == key }) else {
+        guard let key = sender.representedObject as? String, let newValue = Color.allColors.first(where: { $0.key == key }) else {
             return
         }
         self.userColorState = newValue
         Store.shared.set(key: "\(self.title)_userColor", value: key)
-        if let color = newValue.additional as? NSColor {
-            self.userColorView?.layer?.backgroundColor = color.cgColor
-        }
+        self.userColorView?.layer?.backgroundColor = (newValue.additional as? NSColor)?.cgColor
     }
     @objc private func toggleIdleColor(_ sender: NSMenuItem) {
-        guard let key = sender.representedObject as? String,
-              let newValue = Color.allColors.first(where: { $0.key == key }) else {
+        guard let key = sender.representedObject as? String, let newValue = Color.allColors.first(where: { $0.key == key }) else {
             return
         }
         self.idleColorState = newValue
@@ -481,16 +560,32 @@ internal class Popup: NSView, Popup_p {
         if let color = newValue.additional as? NSColor {
             self.idleColorView?.layer?.backgroundColor = color.cgColor
         }
+        self.idleColorView?.layer?.backgroundColor = (newValue.additional as? NSColor)?.cgColor
     }
     @objc private func toggleChartColor(_ sender: NSMenuItem) {
-        guard let key = sender.representedObject as? String,
-              let newValue = Color.allColors.first(where: { $0.key == key }) else {
+        guard let key = sender.representedObject as? String, let newValue = Color.allColors.first(where: { $0.key == key }) else {
             return
         }
         self.chartColorState = newValue
         Store.shared.set(key: "\(self.title)_chartColor", value: key)
         if let color = newValue.additional as? NSColor {
-            self.chart?.color = color
+            self.lineChart?.color = color
         }
+    }
+    @objc private func toggleeCoresColor(_ sender: NSMenuItem) {
+        guard let key = sender.representedObject as? String, let newValue = Color.allColors.first(where: { $0.key == key }) else {
+            return
+        }
+        self.eCoresColorState = newValue
+        Store.shared.set(key: "\(self.title)_eCoresColor", value: key)
+        self.eCoresColorView?.layer?.backgroundColor = (newValue.additional as? NSColor)?.cgColor
+    }
+    @objc private func togglepCoresColor(_ sender: NSMenuItem) {
+        guard let key = sender.representedObject as? String, let newValue = Color.allColors.first(where: { $0.key == key }) else {
+            return
+        }
+        self.pCoresColorState = newValue
+        Store.shared.set(key: "\(self.title)_pCoresColor", value: key)
+        self.pCoresColorView?.layer?.backgroundColor = (newValue.additional as? NSColor)?.cgColor
     }
 }

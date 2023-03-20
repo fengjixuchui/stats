@@ -121,6 +121,8 @@
 "Reset settings" = "重置設定";
 "Pause the Stats" = "暫停 Stats";
 "Resume the Stats" = "恢復 Stats";
+"Combined modules" = "合併模組";
+"Spacing" = "間距";
 
 // Dashboard
 "Serial number" = "序號";
@@ -214,6 +216,8 @@
 "User color" = "使用者色彩";
 "Idle color" = "閒置時色彩";
 "Cluster grouping" = "依群集分組";
+"Efficiency cores color" = "節能核心色彩";
+"Performance cores color" = "效能核心色彩";
 
 // GPU
 "GPU to show" = "顯示顯示卡";
@@ -277,7 +281,7 @@
 "Show unknown sensors" = "顯示未知的感知器";
 "Install fan helper" = "安裝風扇輔助程式";
 "Uninstall fan helper" = "解除安裝風扇輔助程式";
-"Fan value" = "Fan value";
+"Fan value" = "風扇轉速值";
 
 // Network
 "Uploading" = "上傳";
@@ -345,9 +349,9 @@
 "Hide additional information when full" = "電池充飽後隱藏其他資訊";
 "Last charge" = "最近一次充電";
 "Capacity" = "容量";
-"current / maximum / designed" = "current/最大容量/設計容量";
+"current / maximum / designed" = "目前容量/最大容量/設計容量";
 "Low power mode" = "低電量模式";
-"Percentage inside the icon" = "圖示內百分比";
+"Percentage inside the icon" = "在圖示內顯示百分比";
 
 // Bluetooth
 "Battery to show" = "顯示藍牙裝置的電池電量";

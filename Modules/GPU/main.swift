@@ -65,9 +65,11 @@ public struct GPUs: value_t {
 }
 
 public class GPU: Module {
+    private let popupView: Popup
+    private let settingsView: Settings
+    private let portalView: Portal
+    
     private var infoReader: InfoReader? = nil
-    private var settingsView: Settings
-    private var popupView: Popup = Popup()
     
     private var selectedGPU: String = ""
     private var notificationLevelState: Bool = false
@@ -85,11 +87,14 @@ public class GPU: Module {
     }
     
     public init() {
+        self.popupView = Popup()
         self.settingsView = Settings("GPU")
+        self.portalView = Portal("GPU")
         
         super.init(
             popup: self.popupView,
-            settings: self.settingsView
+            settings: self.settingsView,
+            portal: self.portalView
         )
         guard self.available else { return }
         
@@ -138,6 +143,7 @@ public class GPU: Module {
             return
         }
         
+        self.portalView.loadCallback(selectedGPU)
         self.checkNotificationLevel(utilization)
         
         self.menuBar.widgets.filter{ $0.isActive }.forEach { (w: Widget) in
@@ -160,24 +166,14 @@ public class GPU: Module {
         guard self.notificationLevel != "Disabled", let level = Double(self.notificationLevel) else { return }
         
         if let id = self.notificationID, value < level && self.notificationLevelState {
-            if #available(macOS 10.14, *) {
-                removeNotification(id)
-            } else {
-                removeNSNotification(id)
-            }
-            
+            removeNotification(id)
             self.notificationID = nil
             self.notificationLevelState = false
         } else if value >= level && !self.notificationLevelState {
-            let title = localizedString("GPU usage threshold")
-            let subtitle = localizedString("GPU usage is", "\(Int((value)*100))%")
-            
-            if #available(macOS 10.14, *) {
-                self.notificationID = showNotification(title: title, subtitle: subtitle)
-            } else {
-                self.notificationID = showNSNotification(title: title, subtitle: subtitle)
-            }
-            
+            self.notificationID = showNotification(
+                title: localizedString("GPU usage threshold"),
+                subtitle: localizedString("GPU usage is", "\(Int((value)*100))%")
+            )
             self.notificationLevelState = true
         }
     }

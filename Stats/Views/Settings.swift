@@ -68,13 +68,11 @@ class SettingsWindow: NSWindow, NSWindowDelegate, NSToolbarDelegate {
         newToolbar.showsBaselineSeparator = true
         newToolbar.delegate = self
         
-        if #available(macOS 11, *) {
-            self.toolbar = newToolbar
-        }
+        self.toolbar = newToolbar
         self.contentViewController = sidebarViewController
         self.titlebarAppearsTransparent = true
         self.backgroundColor = .clear
-        self.center()
+        self.positionCenter()
         self.setIsVisible(false)
         
         let windowController = NSWindowController()
@@ -168,7 +166,8 @@ class SettingsWindow: NSWindow, NSWindowDelegate, NSToolbarDelegate {
             self.orderFrontRegardless()
         }
         
-        if let name = notification.userInfo?["module"] as? String {
+        if var name = notification.userInfo?["module"] as? String {
+            if name == "Combined modules" { name = "Dashboard" }
             self.sidebarView.openMenu(name)
         }
     }
@@ -218,6 +217,13 @@ class SettingsWindow: NSWindow, NSWindowDelegate, NSToolbarDelegate {
             self.setIsVisible(true)
         }
     }
+    
+    private func positionCenter() {
+        self.setFrameOrigin(NSPoint(
+            x: (NSScreen.main!.frame.width - SettingsWindow.size.width)/2,
+            y: (NSScreen.main!.frame.height - SettingsWindow.size.height)/2
+        ))
+    }
 }
 
 // MARK: - MainView
@@ -230,11 +236,7 @@ private class MainView: NSView {
         
         let foreground = NSVisualEffectView(frame: NSRect(x: 0, y: 0, width: frame.width, height: frame.height))
         foreground.blendingMode = .withinWindow
-        if #available(macOS 10.14, *) {
-            foreground.material = .windowBackground
-        } else {
-            foreground.material = .popover
-        }
+        foreground.material = .windowBackground
         foreground.state = .active
         
         super.init(frame: NSRect.zero)
@@ -268,6 +270,16 @@ private class SidebarView: NSStackView {
     private let scrollView: ScrollableStackView
     
     private let supportPopover = NSPopover()
+    private var pauseButton: NSButton? = nil
+    
+    private var pauseState: Bool {
+        get {
+            return Store.shared.bool(key: "pause", defaultValue: false)
+        }
+        set {
+            Store.shared.set(key: "pause", value: newValue)
+        }
+    }
     
     private var dashboardIcon: NSImage {
         if #available(macOS 11.0, *), let icon = NSImage(systemSymbolName: "circle.grid.3x3.fill", accessibilityDescription: nil) {
@@ -283,21 +295,33 @@ private class SidebarView: NSStackView {
     }
     
     private var bugIcon: NSImage {
-//        if #available(macOS 11.0, *), let icon = NSImage(systemSymbolName: "ladybug", accessibilityDescription: nil) {
-//            return icon
-//        }
+        if #available(macOS 12.0, *), let icon = iconFromSymbol(name: "ladybug", scale: .large) {
+            return icon
+        }
         return NSImage(named: NSImage.Name("bug"))!
     }
     private var supportIcon: NSImage {
-//        if #available(macOS 11.0, *), let icon = NSImage(systemSymbolName: "heart.fill", accessibilityDescription: nil) {
-//            return icon
-//        }
+        if #available(macOS 12.0, *), let icon = iconFromSymbol(name: "heart.fill", scale: .large) {
+            return icon
+        }
         return NSImage(named: NSImage.Name("donate"))!
     }
+    private var pauseIcon: NSImage {
+        if #available(macOS 11.0, *), let icon = iconFromSymbol(name: "pause.fill", scale: .large) {
+            return icon
+        }
+        return NSImage(named: NSImage.Name("pause"))!
+    }
+    private var resumeIcon: NSImage {
+        if #available(macOS 11.0, *), let icon = iconFromSymbol(name: "play.fill", scale: .large) {
+            return icon
+        }
+        return NSImage(named: NSImage.Name("resume"))!
+    }
     private var closeIcon: NSImage {
-//        if #available(macOS 11.0, *), let icon = NSImage(systemSymbolName: "power.circle", accessibilityDescription: nil) {
-//            return icon
-//        }
+        if #available(macOS 12.0, *), let icon = iconFromSymbol(name: "power", scale: .large) {
+            return icon
+        }
         return NSImage(named: NSImage.Name("power"))!
     }
     
@@ -321,13 +345,19 @@ private class SidebarView: NSStackView {
         self.supportPopover.behavior = .transient
         self.supportPopover.contentViewController = self.supportView()
         
-        let additionalButtons: NSStackView = NSStackView(frame: NSRect(x: 0, y: 0, width: frame.width, height: 40))
+        let additionalButtons: NSStackView = NSStackView(frame: NSRect(x: 0, y: 0, width: frame.width, height: 45))
+        additionalButtons.heightAnchor.constraint(equalToConstant: 45).isActive = true
         additionalButtons.orientation = .horizontal
         additionalButtons.distribution = .fillEqually
+        additionalButtons.alignment = .centerY
         additionalButtons.spacing = 0
+        
+        let pauseButton = self.makeButton(title: localizedString("Pause the Stats"), image: self.pauseState ? self.resumeIcon : self.pauseIcon, action: #selector(togglePause))
+        self.pauseButton = pauseButton
         
         additionalButtons.addArrangedSubview(self.makeButton(title: localizedString("Report a bug"), image: self.bugIcon, action: #selector(reportBug)))
         additionalButtons.addArrangedSubview(self.makeButton(title: localizedString("Support the application"), image: self.supportIcon, action: #selector(donate)))
+        additionalButtons.addArrangedSubview(pauseButton)
         additionalButtons.addArrangedSubview(self.makeButton(title: localizedString("Close application"), image: self.closeIcon, action: #selector(closeApp)))
         
         let emptySpace = NSView()
@@ -338,6 +368,12 @@ private class SidebarView: NSStackView {
         }
         self.addArrangedSubview(self.scrollView)
         self.addArrangedSubview(additionalButtons)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(listenForPause), name: .pause, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .pause, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -369,25 +405,21 @@ private class SidebarView: NSStackView {
     }
     
     private func makeButton(title: String, image: NSImage, action: Selector) -> NSButton {
-        let button = NSButtonWithPadding()
-        button.frame = CGRect(x: 0, y: 0, width: 44, height: 44)
-        button.verticalPadding = 20
-        button.horizontalPadding = 20
+        let button = NSButton()
         button.title = title
         button.toolTip = title
         button.bezelStyle = .regularSquare
         button.translatesAutoresizingMaskIntoConstraints = false
         button.imageScaling = .scaleNone
         button.image = image
-        if #available(OSX 10.14, *) {
-            button.contentTintColor = .secondaryLabelColor
-        }
+        button.contentTintColor = .secondaryLabelColor
         button.isBordered = false
         button.action = action
         button.target = self
         button.focusRingType = .none
+        button.widthAnchor.constraint(equalToConstant: 45).isActive = true
         
-        let rect = NSRect(x: 0, y: 0, width: 44, height: 44)
+        let rect = NSRect(x: 0, y: 0, width: 45, height: 45)
         let trackingArea = NSTrackingArea(
             rect: rect,
             options: [NSTrackingArea.Options.activeAlways, NSTrackingArea.Options.mouseEnteredAndExited, NSTrackingArea.Options.activeInActiveApp],
@@ -460,6 +492,18 @@ private class SidebarView: NSStackView {
     @objc private func closeApp(_ sender: Any) {
         NSApp.terminate(sender)
     }
+    
+    @objc private func togglePause(_ sender: NSButton) {
+        self.pauseState = !self.pauseState
+        self.pauseButton?.toolTip = localizedString(self.pauseState ? "Resume the Stats" : "Pause the Stats")
+        self.pauseButton?.image = self.pauseState ? self.resumeIcon : self.pauseIcon
+        NotificationCenter.default.post(name: .pause, object: nil, userInfo: ["state": self.pauseState])
+    }
+    
+    @objc func listenForPause() {
+        self.pauseButton?.toolTip = localizedString(self.pauseState ? "Resume the Stats" : "Pause the Stats")
+        self.pauseButton?.image = self.pauseState ? self.resumeIcon : self.pauseIcon
+    }
 }
 
 private class MenuItem: NSView {
@@ -493,9 +537,7 @@ private class MenuItem: NSView {
         }
         imageView.frame = NSRect(x: 8, y: (32 - 18)/2, width: 18, height: 18)
         imageView.wantsLayer = true
-        if #available(OSX 10.14, *) {
-            imageView.contentTintColor = .labelColor
-        }
+        imageView.contentTintColor = .labelColor
         self.imageView = imageView
         
         let titleView = TextView(frame: NSRect(x: 34, y: ((32 - 16)/2) + 1, width: 100, height: 16))
@@ -526,23 +568,14 @@ private class MenuItem: NSView {
         
         NotificationCenter.default.post(name: .openModuleSettings, object: nil, userInfo: ["module": self.title])
         
-        if #available(macOS 10.14, *) {
-            self.layer?.backgroundColor = NSColor.selectedContentBackgroundColor.cgColor
-        } else {
-            self.layer?.backgroundColor = NSColor.systemBlue.cgColor
-        }
-        
-        if #available(macOS 10.14, *) {
-            self.imageView?.contentTintColor = .white
-        }
+        self.layer?.backgroundColor = NSColor.selectedContentBackgroundColor.cgColor
+        self.imageView?.contentTintColor = .white
         self.titleView?.textColor = .white
     }
     
     public func reset() {
         self.layer?.backgroundColor = .clear
-        if #available(macOS 10.14, *) {
-            self.imageView?.contentTintColor = .labelColor
-        }
+        self.imageView?.contentTintColor = .labelColor
         self.titleView?.textColor = .labelColor
         self.active = false
     }

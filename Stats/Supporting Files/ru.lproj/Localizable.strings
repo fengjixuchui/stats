@@ -121,6 +121,8 @@
 "Reset settings" = "Сбросить настройки";
 "Pause the Stats" = "Приостановить Stats";
 "Resume the Stats" = "Возобновить Stats";
+"Combined modules" = "Комбинированные модули";
+"Spacing" = "Интервал";
 
 // Dashboard
 "Serial number" = "Серийный номер";
@@ -214,6 +216,8 @@
 "User color" = "Пользовательский цвет";
 "Idle color" = "Холостой цвет";
 "Cluster grouping" = "Кластерная группировка";
+"Efficiency cores color" = "Цвет энергоэффективных ядер";
+"Performance cores color" = "Цвет производительных ядер";
 
 // GPU
 "GPU to show" = "Активный графический процессор";

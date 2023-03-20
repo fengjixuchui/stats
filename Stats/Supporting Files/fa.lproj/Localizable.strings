@@ -121,6 +121,8 @@
 "Reset settings" = "ریست تنظیمات";
 "Pause the Stats" = "متوقف کردن Stats";
 "Resume the Stats" = "ادامه‌ی کار Stats";
+"Combined modules" = "Combined modules";
+"Spacing" = "Spacing";
 
 // Dashboard
 "Serial number" = "سریال نامبر";
@@ -214,6 +216,8 @@
 "User color" = "رنگ کاربر";
 "Idle color" = "رنگ بیکار";
 "Cluster grouping" = "گروه‌بندی کلاستر";
+"Efficiency cores color" = "Efficiency cores color";
+"Performance cores color" = "Performance cores color";
 
 // GPU
 "GPU to show" = "نمایش جی پی یو";

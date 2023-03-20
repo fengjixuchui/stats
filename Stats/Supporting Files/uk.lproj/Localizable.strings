@@ -121,6 +121,8 @@
 "Reset settings" = "Скинути налаштування";
 "Pause the Stats" = "Призупинити Stats";
 "Resume the Stats" = "Відновити Stats";
+"Combined modules" = "Комбіновані модулі";
+"Spacing" = "Інтервал";
 
 // Dashboard
 "Serial number" = "Серійний номер";
@@ -214,6 +216,8 @@
 "User color" = "Колір користувача";
 "Idle color" = "Колір простою";
 "Cluster grouping" = "Кластерне групування";
+"Efficiency cores color" = "Колір енергоефективних ядер";
+"Performance cores color" = "Колір високопродуктивних ядер";
 
 // GPU
 "GPU to show" = "Активний графічний процесор";
